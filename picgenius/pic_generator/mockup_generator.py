@@ -1,6 +1,10 @@
 """Module for MockupGenerator class definition."""
 import os
+import logging
+from typing import Optional
 from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import ImageSequenceClip
+import numpy as np
 
 
 class MockupGenerator:
@@ -45,17 +49,23 @@ class MockupGenerator:
         new_mockup_path = os.path.join(mockups_path, design_name)
         os.makedirs(new_mockup_path, exist_ok=True)
 
-        print(f" [*] Generating design: {design_name}")
-
-        # print("\t[*] Generating gif..")
-        # TODO: generate_video(design_path, f"{design_mockups_dir_path}/design_video.mp4")
+        logging.info("Start design generation: %s", design_name)
 
         watermarking = template_conf.get("watermarking")
+
+        video_filename = "design_video.mp4"
+        logging.info(" Generating video: %s", video_filename)
+        self.generate_video(
+            design,
+            os.path.join(new_mockup_path, video_filename),
+            watermarking=watermarking,
+        )
+
         for template_metadata in template_conf["templates"]:
             mockup_filename, _ = self.extract_filename(
                 template_metadata["template_path"]
             )
-            print(f"\t[*] Generating mockup: {mockup_filename}")
+            logging.info(" Generating mockup: %s", mockup_filename)
 
             mockup_path = os.path.join(new_mockup_path, mockup_filename)
 
@@ -70,6 +80,33 @@ class MockupGenerator:
             if watermarking is not None:
                 mockup = self.apply_watermarking(mockup, watermarking)
             mockup.save(mockup_path)
+
+    def generate_video(
+        self, image: Image.Image, video_path: str, watermarking: Optional[dict] = None
+    ):
+        """Generate a zooming video into the design (mp4)."""
+        image = self.resize_and_crop(image, 2000, 2000)
+        if watermarking is not None:
+            image = self.apply_watermarking(image.convert("RGBA"), watermarking)
+
+        frames = self.generate_video_frames(image)
+        np_frames = [np.array(img) for img in frames]
+        clip = ImageSequenceClip(np_frames, fps=20)
+        clip.write_videofile(video_path, verbose=False, logger=None)
+
+    def generate_video_frames(self, image: Image.Image, frames: int = 100, step=1):
+        """Generate the frames for the video."""
+        images = []
+        for i in range(0, frames, step):
+            tl = i
+            br = image.width - i
+
+            zoom_region = (tl, tl, br, br)
+            zoom_image = image.crop(zoom_region).resize(
+                image.size, resample=Image.LANCZOS
+            )
+            images.append(zoom_image)
+        return images
 
     def paste_image_on_template(
         self,
