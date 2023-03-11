@@ -4,6 +4,8 @@ import logging
 from typing import Optional
 import click
 
+from pic_generator import MockupGenerator
+
 
 class Config:
     """Config class that stores templates data and design formats."""
@@ -92,3 +94,8 @@ def generate_mockups(config, template_name, design_path, output_path):
 
     if template_name not in config.mockup_templates:
         logging.error('Template name "%s" not found.', template_name)
+
+    template_config = config.mockup_templates[template_name]
+
+    generator = MockupGenerator()
+    generator.generate_mockups(design_path, output_path, template_config)
