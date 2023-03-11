@@ -28,17 +28,17 @@ class MockupGenerator:
         if multiple_designs:
             raise NotImplementedError("TODO: MultipleDesigns mockups.")
         else:
-            self.generate_1_design_mockups(design_path, mockups_path, template_conf)
+            self.generate_1_designs_mockups(design_path, mockups_path, template_conf)
 
-    def generate_1_design_mockups(
+    def generate_1_designs_mockups(
         self, design_path: str, mockups_path: str, template_conf: dict
     ):
         """Generates mockups for one specified design or for all designs in the folder."""
         designs = self._load_images(design_path)
         for design, name in designs:
-            self.generate_a_mockup(design, name, mockups_path, template_conf)
+            self.generate_mockups_for_design(design, name, mockups_path, template_conf)
 
-    def generate_a_mockup(
+    def generate_mockups_for_design(
         self,
         design: Image.Image,
         design_name: str,
