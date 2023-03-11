@@ -46,7 +46,7 @@ class MockupGenerator:
         template_conf: dict,
     ):
         """Generate mockups based on a single design image and a template configuration."""
-        new_mockup_path = os.path.join(mockups_path, design_name)
+        new_mockup_path = os.path.join(mockups_path, design_name, "mockups")
         os.makedirs(new_mockup_path, exist_ok=True)
 
         logging.info("Start design generation: %s", design_name)

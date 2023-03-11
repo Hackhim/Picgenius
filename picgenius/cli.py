@@ -58,9 +58,23 @@ def picgenius(ctx, config_path: str, debug: bool, quiet: bool):
 
 
 @picgenius.command
+@click.option(
+    "--design",
+    "-d",
+    "design_path",
+    default="./workdir/designs",
+    help="Path to designs folder or design file.",
+)
+@click.option(
+    "--output",
+    "-o",
+    "output_path",
+    default="./workdir/mockups",
+    help="Path to output mockups.",
+)
 @click.pass_obj
-def format_designs(config):
-    """Format specified design(s) to the specified formats."""
+def format_design(config, design_path, ouput_path):
+    """Format specified design(s) to the specified formats in the config file."""
     print("Formatting images")
     print(config.mockups)
 
