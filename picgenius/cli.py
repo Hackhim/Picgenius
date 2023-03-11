@@ -69,8 +69,8 @@ def picgenius(ctx, config_path: str, debug: bool, quiet: bool):
     "--output",
     "-o",
     "output_path",
-    default="./workdir/mockups",
-    help="Path to output mockups.",
+    default="./workdir/products",
+    help="Path to output product images.",
 )
 @click.pass_obj
 def format_design(config, design_path, output_path):
@@ -101,8 +101,8 @@ def format_design(config, design_path, output_path):
     "--output",
     "-o",
     "output_path",
-    default="./workdir/mockups",
-    help="Path to output mockups.",
+    default="./workdir/products",
+    help="Path to output product images.",
 )
 @click.pass_obj
 def generate_mockups(config, template_name, design_path, output_path):
