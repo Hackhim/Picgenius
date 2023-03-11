@@ -4,7 +4,7 @@ import logging
 from typing import Optional
 import click
 
-from pic_generator import MockupGenerator
+from pic_generator import MockupGenerator, FormattedImageGenerator
 
 
 class Config:
@@ -73,10 +73,12 @@ def picgenius(ctx, config_path: str, debug: bool, quiet: bool):
     help="Path to output mockups.",
 )
 @click.pass_obj
-def format_design(config, design_path, ouput_path):
+def format_design(config, design_path, output_path):
     """Format specified design(s) to the specified formats in the config file."""
-    print("Formatting images")
-    print(config.mockups)
+    generator = FormattedImageGenerator()
+    generator.generate_formatted_designs(
+        design_path, output_path, config.design_formats
+    )
 
 
 @picgenius.command
