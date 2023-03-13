@@ -1,0 +1,103 @@
+<mxfile host="app.diagrams.net" modified="2023-03-13T22:06:38.475Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" etag="txWCE2Lsx3MnFstWL6WU" version="21.0.6" type="github">
+  <diagram name="Page-1" id="sGuzA3g51q6fcSDmOtlH">
+    <mxGraphModel dx="2261" dy="2035" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-1" value="AI Design&lt;br&gt;Generated" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="-315" y="-630" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-4" value="Crop and Resize images in all formats" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="-145" y="-760" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-5" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-1" target="6QAfk4vxS9SV6BwnsCQb-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="15" y="-560" as="sourcePoint" />
+            <mxPoint x="65" y="-610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-6" value="Upload images on a server" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="-5" y="-760" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-7" value="Get a password protected download link" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="135" y="-760" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-9" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-4" target="6QAfk4vxS9SV6BwnsCQb-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-242" y="-612" as="sourcePoint" />
+            <mxPoint x="-128" y="-688" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-10" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-6" target="6QAfk4vxS9SV6BwnsCQb-7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-55" y="-710" as="sourcePoint" />
+            <mxPoint x="5" y="-710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-11" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-7" target="6QAfk4vxS9SV6BwnsCQb-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-45" y="-700" as="sourcePoint" />
+            <mxPoint x="15" y="-700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-12" value="Generate the PDF with the download link &amp;amp; password" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="275" y="-760" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-14" value="Upload the PDF on the server" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="415" y="-760" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-15" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-12" target="6QAfk4vxS9SV6BwnsCQb-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="225" y="-710" as="sourcePoint" />
+            <mxPoint x="285" y="-710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-16" value="Generate short design video" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="-5" y="-500" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-17" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-1" target="6QAfk4vxS9SV6BwnsCQb-18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-233" y="-604" as="sourcePoint" />
+            <mxPoint x="-127" y="-686" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-18" value="Generate all mockups with watermarker" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="-145" y="-500" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-19" value="Generate all mockups with watermarker" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="275" y="-500" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-20" value="Upload all of these png and mp4 files on the server" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="135" y="-500" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-21" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-18" target="6QAfk4vxS9SV6BwnsCQb-16" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-233" y="-556" as="sourcePoint" />
+            <mxPoint x="-127" y="-474" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-22" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-16" target="6QAfk4vxS9SV6BwnsCQb-20" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-55" y="-450" as="sourcePoint" />
+            <mxPoint x="5" y="-450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6QAfk4vxS9SV6BwnsCQb-23" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="6QAfk4vxS9SV6BwnsCQb-20" target="6QAfk4vxS9SV6BwnsCQb-19" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-45" y="-440" as="sourcePoint" />
+            <mxPoint x="15" y="-440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4Q-ebMStnQpWPlXbXeAZ-32" value="AI Design - Automation Process" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="-630" y="-930" width="580" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="hgzs8K8XfKDgnrmjqiIY-1" value="Product Creation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="-180" y="-810" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hgzs8K8XfKDgnrmjqiIY-2" value="Product Page" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="-180" y="-550" width="150" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
