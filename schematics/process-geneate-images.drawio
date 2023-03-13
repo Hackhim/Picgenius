@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-13T22:00:38.396Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" etag="DKgAriUW_wuwnabofTps" version="21.0.6" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-13T22:00:52.861Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" etag="wh_Z52J-HTk4HAWBrPME" version="21.0.6" type="github">
   <diagram name="Page-1" id="sGuzA3g51q6fcSDmOtlH">
     <mxGraphModel dx="3088" dy="3204" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -94,7 +94,7 @@
             <mxPoint x="15" y="-150" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Q-ebMStnQpWPlXbXeAZ-1" value="AI Design Products - Process" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+        <mxCell id="4Q-ebMStnQpWPlXbXeAZ-1" value="AI Design Products" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
           <mxGeometry x="-910" y="-1210" width="380" height="70" as="geometry" />
         </mxCell>
         <mxCell id="4Q-ebMStnQpWPlXbXeAZ-2" value="Catégorie" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
