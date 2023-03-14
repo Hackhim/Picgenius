@@ -7,7 +7,7 @@ from moviepy.editor import ImageSequenceClip
 import numpy as np
 
 
-def resize_and_crop(self, image: Image.Image, size_x: int, size_y: int):
+def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
     """Resize and crop image."""
     target_ratio = size_x / size_y
     current_ratio = image.width / image.height
@@ -30,7 +30,6 @@ def resize_and_crop(self, image: Image.Image, size_x: int, size_y: int):
 
 
 def paste_text_on_image(
-    self,
     image: Image.Image,
     text: str,
     font: ImageFont.FreeTypeFont,
@@ -63,9 +62,7 @@ def paste_text_on_image(
     return combined
 
 
-def get_watermarking_font(
-    self, image: Image.Image, text: str, font_path: str, margin: int
-):
+def get_watermarking_font(image: Image.Image, text: str, font_path: str, margin: int):
     """
     Return a font object that can be used to apply watermarking text to an image.
 
@@ -86,19 +83,6 @@ def get_watermarking_font(
         font_size += 1
         font = ImageFont.truetype(font_path, font_size)
     return font
-
-
-def paste_image_on_template(
-    self,
-    template: Image.Image,
-    image: Image.Image,
-    position: tuple[int, int],
-    size: tuple[int, int],
-):
-    """Paste the specified image on the specified template."""
-    resized_design = self.resize_and_crop(image, *size)
-    template.paste(resized_design, position)
-    return template
 
 
 def generate_video_frames(self, image: Image.Image, frames: int = 100, step=1):

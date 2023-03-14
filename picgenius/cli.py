@@ -113,5 +113,5 @@ def generate_mockups(config, template_name, design_path, output_path):
 
     template_config = config.mockup_templates[template_name]
 
-    generator = MockupGenerator()
-    generator.generate_mockups(design_path, output_path, template_config)
+    generator = MockupGenerator(design_path, output_path, template_config)
+    generator.generate()
