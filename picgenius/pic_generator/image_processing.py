@@ -33,50 +33,51 @@ def paste_text_on_image(
     image: Image.Image,
     text: str,
     font: ImageFont.FreeTypeFont,
-    color: tuple[int, int, int, int] = (0, 0, 0, 0),
+    pos: tuple[int, int],
+    color: tuple[int, int, int, int] = (0, 0, 0, 100),
+    textbox_color: Optional[tuple[int, int, int, int]] = None,
+    textbox_padding: int | tuple[int, int] | tuple[int, int, int, int] = 0,
 ):
-    """
-    Paste given text onto the given image using the specified font and color.
+    """Paste given text onto the given image using the specified font and color."""
 
-    Args:
-        image (PIL.Image.Image): The image onto which to paste the text.
-        text (str): The text to paste onto the image.
-        font (PIL.ImageFont.FreeTypeFont): The font to use for the text.
-        color (tuple[int, int, int, int], optional):
-            The color of the text, as a tuple of RGBA values. Defaults to (0, 0, 0, 0).
-
-    Returns:
-        PIL.Image.Image: The resulting image with the text pasted onto it.
-    """
     mask = Image.new("RGBA", image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(mask)
 
-    text_bbox = draw.textbbox((0, 0), text, font=font)
-    text_position = (
-        (image.width - text_bbox[2]) // 2,
-        (image.height - text_bbox[3]) // 2,
-    )
+    if textbox_color is not None:
+        text_size = font.getsize(text)
+        padding = _format_padding(textbox_padding)
+        textbox_pos = (
+            pos[0] - padding[0],
+            pos[1] - padding[1],
+            pos[0] + text_size[0] + padding[2],
+            pos[1] + text_size[1] + padding[3],
+        )
 
-    draw.text(text_position, text, font=font, fill=color)
+        draw.rectangle(textbox_pos, fill=textbox_color)
+
+    draw.text(pos, text, font=font, fill=color)
+
     combined = Image.alpha_composite(image, mask)
     return combined
 
 
-def get_watermarking_font(image: Image.Image, text: str, font_path: str, margin: int):
-    """
-    Return a font object that can be used to apply watermarking text to an image.
+def _format_padding(
+    textbox_padding: int | tuple[int, int] | tuple[int, int, int, int],
+) -> tuple[int, int, int, int]:
+    if isinstance(textbox_padding, int):
+        return tuple(textbox_padding for _ in range(4))
+    elif isinstance(textbox_padding, tuple) and len(textbox_padding) == 2:
+        top_and_bottom = textbox_padding[0]
+        left_and_right = textbox_padding[1]
+        return (left_and_right, top_and_bottom, left_and_right, top_and_bottom)
+    elif isinstance(textbox_padding, tuple) and len(textbox_padding) == 4:
+        return textbox_padding
+    else:
+        raise ValueError(f"textbox_padding must be an int or tuple.")
 
-    Args:
-        image (PIL.Image.Image): The image to be watermarked.
-        text (str): The text to be used as watermark.
-        font_path (str): The path of the font file to be used for watermarking.
-        margin (int): The margin size to be used when applying the watermark.
 
-    Returns:
-        PIL.ImageFont.FreeTypeFont: A font object that can be used to apply
-        watermarking text to an image.
-    """
-    max_width = image.width - (margin * 2)
+def find_font_size(text: str, font_path: str, max_width):
+    """Return a font object that fits in the given size."""
     font_size = 1
     font = ImageFont.truetype(font_path, font_size)
     while font.getlength(text) < max_width:
@@ -85,7 +86,7 @@ def get_watermarking_font(image: Image.Image, text: str, font_path: str, margin:
     return font
 
 
-def generate_video_frames(self, image: Image.Image, frames: int = 100, step=1):
+def generate_video_frames(image: Image.Image, frames: int = 100, step=1):
     """Generate the frames for the video."""
     images = []
     for i in range(0, frames, step):
