@@ -283,18 +283,16 @@ class MockupGenerator:
 
         return (x_pos, y_pos)
 
+    def generate_video(
+        self, image: Image.Image, video_path: str, watermarking: Optional[dict] = None
+    ):
+        """Generate a zooming video into the design (mp4)."""
+        # TODO: Handle video generation with different variants
+        image = self.resize_and_crop(image, 2000, 2000)
+        if watermarking is not None:
+            image = self.apply_watermarking(image.convert("RGBA"), watermarking)
 
-#
-#    def generate_video(
-#        self, image: Image.Image, video_path: str, watermarking: Optional[dict] = None
-#    ):
-#        """Generate a zooming video into the design (mp4)."""
-#        # TODO: Handle video generation with different variants
-#        image = self.resize_and_crop(image, 2000, 2000)
-#        if watermarking is not None:
-#            image = self.apply_watermarking(image.convert("RGBA"), watermarking)
-#
-#        frames = self.generate_video_frames(image)
-#        np_frames = [np.array(img) for img in frames]
-#        clip = ImageSequenceClip(np_frames, fps=20)
-#        clip.write_videofile(video_path, verbose=False, logger=None)
+        frames = self.generate_video_frames(image)
+        np_frames = [np.array(img) for img in frames]
+        clip = ImageSequenceClip(np_frames, fps=20)
+        clip.write_videofile(video_path, verbose=False, logger=None)

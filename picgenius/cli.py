@@ -5,6 +5,7 @@ from typing import Optional
 import click
 
 from pic_generator import MockupGenerator, FormattedImageGenerator
+from pic_generator import PicGenerator
 
 
 class Config:
@@ -42,7 +43,7 @@ class Config:
 
 
 @click.group
-@click.option("--config", "-f", "config_path", default="./picgenius.conf", type=str)
+@click.option("--config", "-f", "config_path", default="./picgenius.yml", type=str)
 @click.option("--debug", is_flag=True)
 @click.option("--quiet", is_flag=True)
 @click.pass_context
@@ -54,7 +55,7 @@ def picgenius(ctx, config_path: str, debug: bool, quiet: bool):
         logging.getLogger().setLevel("DEBUG")
     # TODO: add quiet logging
 
-    ctx.obj = Config(config_path=config_path)
+    ctx.obj = PicGenerator(config_path=config_path)
 
 
 @picgenius.command
@@ -115,3 +116,9 @@ def generate_mockups(config, template_name, design_path, output_path):
 
     generator = MockupGenerator(design_path, output_path, template_config)
     generator.generate()
+
+
+@picgenius.command
+@click.pass_obj
+def test_command(picgenerator):
+    print("TEST COMMAND")
