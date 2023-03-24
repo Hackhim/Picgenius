@@ -25,12 +25,12 @@ mockups:
         font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
         text: SIMAAKER SHOP
         color: [255, 255, 255, 255]
+        position: [center, bottom]
+        margin: 400
+        width: 40%
         textbox:
           padding: [15, 10, 10, 10]
           color: [200, 200, 200, 200]
-        margin: 400
-        position: [center, bottom]
-        width: 40%
       small-bottom-right:
         font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
         text: SIMAAKER SHOP
@@ -40,32 +40,39 @@ mockups:
         width: 15%
     templates:
       - template_path: ./workdir/templates-1-design/1-bedroom.png
-        position: [705, 255]
-        size: [658, 867]
+        elements:
+          - position: [705, 255]
+            size: [658, 867]
         watermarking: default
       - template_path: ./workdir/templates-1-design/2-cabinet.png
-        position: [825, 176]
-        size: [868, 1247]
+        elements:
+          - position: [825, 176]
+            size: [868, 1247]
         watermarking: center-textbox
       - template_path: ./workdir/templates-1-design/3-desktop.png
-        position: [462, 268]
-        size: [727, 1029]
+        elements:
+          - position: [462, 268]
+            size: [727, 1029]
         watermarking: center-textbox
       - template_path: ./workdir/templates-1-design/4-mac.png
-        position: [1016, 114]
-        size: [751, 1086]
+        elements:
+          - position: [1016, 114]
+            size: [751, 1086]
         watermarking: default
       - template_path: ./workdir/templates-1-design/5-wood-border.png
-        position: [643, 293]
-        size: [949, 1276]
+        elements:
+          - position: [643, 293]
+            size: [949, 1276]
         watermarking: default
       - template_path: ./workdir/templates-1-design/6-grey-border.png
-        position: [439, 252]
-        size: [1116, 1493]
+        elements:
+          - position: [439, 252]
+            size: [1116, 1493]
         watermarking: small-bottom-right
       - template_path: ./workdir/templates-1-design/7-black-border.png
-        position: [422, 256]
-        size: [1154, 1494]
+        elements:
+          - position: [422, 256]
+            size: [1154, 1494]
         watermarking: small-bottom-right
     video:
       movement: zoom-in
