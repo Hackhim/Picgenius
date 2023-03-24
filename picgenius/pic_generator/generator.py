@@ -112,6 +112,16 @@ CONFIG_SCHEMA = {
                             },
                         },
                     },
+                    "video": {
+                        "type": "object",
+                        "properties": {
+                            "movement": {"type": "string"},
+                            "start_zoom": {"type": "string"},
+                            "step": {"type": "number"},
+                            "frames": {"type": "number"},
+                            "fps": {"type": "number"},
+                        },
+                    },
                 },
             },
         },
@@ -131,19 +141,12 @@ class PicGenerator:
         with open(config_path, "r", encoding="utf-8") as f:
             config: dict = yaml.safe_load(f)
 
-        is_valid = validate(config, self.config_schema)
-        print(is_valid)
+        validate(config, CONFIG_SCHEMA)
 
-        self.formats = self._load_formats_from_config(config)
+        self.formats = config.get("formats", [])
         self.mockups = self._load_mockups_from_config(config)
 
-    def _load_formats_from_config(self, config: dict) -> list[dict]:
-        config_formats = config.get("formats", [])
-
-        formats = []
-        for format in config_formats:
-            pass
-        return formats
-
     def _load_mockups_from_config(self, config: dict) -> dict:
-        return []
+        mockups = {}
+
+        return mockups
