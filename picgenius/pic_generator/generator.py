@@ -1,7 +1,13 @@
 """Module for PicGenerator class declaration."""
+import logging
+import os
 import yaml
+from PIL import Image
 from jsonschema import validate
 from .mockup import Mockup
+from .design import Design
+
+from . import utils
 
 CONFIG_SCHEMA = {
     "type": "object",
@@ -162,3 +168,35 @@ class PicGenerator:
         video = config_mockup.get("video", None)
         mockup = Mockup(designs_count, templates, watermarks=watermarks, video=video)
         return mockup
+
+    def generate_formatted_designs(self, design_path, output_dir: str):
+        """Generate all formats for design."""
+        designs = [
+            Design(image, name) for image, name in utils.load_images(design_path)
+        ]
+
+        for design in designs:
+            logging.info("Start design generation: %s", design.name)
+            images_dir = self.create_formatted_designs_dir(output_dir, design.name)
+            for formatted_design, inches in design.generate_formats(self.formats):
+                logging.info(" %sx%s", inches[0], inches[1])
+                self.save_formatted_design(
+                    formatted_design, images_dir, design.name, inches
+                )
+
+    def create_formatted_designs_dir(self, output_dir: str, design_name: str) -> str:
+        """Create the output directory for formatted designs."""
+        images_dir = os.path.join(output_dir, design_name, "images")
+        os.makedirs(images_dir, exist_ok=True)
+        return images_dir
+
+    def save_formatted_design(
+        self, image: Image.Image, output_dir: str, name: str, inches: tuple[int, int]
+    ):
+        """Save the formatted design into the output_dir."""
+        formatted_image_filename = f"{name}-{inches[0]}-{inches[1]}.png"
+        formatted_image_path = os.path.join(
+            output_dir,
+            formatted_image_filename,
+        )
+        image.save(formatted_image_path)

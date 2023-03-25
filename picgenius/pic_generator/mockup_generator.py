@@ -7,7 +7,7 @@ from moviepy.editor import ImageSequenceClip
 import numpy as np
 
 from . import utils
-from . import image_processing as im
+from . import processing as im
 
 
 class Defaults:

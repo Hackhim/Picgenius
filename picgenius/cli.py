@@ -4,7 +4,7 @@ import logging
 from typing import Optional
 import click
 
-from pic_generator import MockupGenerator, FormattedImageGenerator
+# from pic_generator import MockupGenerator, FormattedImageGenerator
 from pic_generator import PicGenerator
 
 
@@ -67,17 +67,19 @@ def picgenius(ctx, config_path: str, debug: bool):
 @click.option(
     "--output",
     "-o",
-    "output_path",
+    "output_dir",
     default="./workdir/products",
-    help="Path to output product images.",
+    help="Path to output directory product images.",
 )
 @click.pass_obj
-def format_design(config, design_path, output_path):
+def format_design(picgenerator: PicGenerator, design_path: str, output_dir: str):
     """Format specified design(s) to the specified formats in the config file."""
-    generator = FormattedImageGenerator()
-    generator.generate_formatted_designs(
-        design_path, output_path, config.design_formats
-    )
+
+    picgenerator.generate_formatted_designs(design_path, output_dir)
+    # generator = FormattedImageGenerator()
+    # generator.generate_formatted_designs(
+    #    design_path, output_path, config.design_formats
+    # )
 
 
 @picgenius.command
