@@ -45,15 +45,13 @@ class Config:
 @click.group
 @click.option("--config", "-f", "config_path", default="./picgenius.yml", type=str)
 @click.option("--debug", is_flag=True)
-@click.option("--quiet", is_flag=True)
 @click.pass_context
-def picgenius(ctx, config_path: str, debug: bool, quiet: bool):
+def picgenius(ctx, config_path: str, debug: bool):
     """Root group for pic genius commands."""
     logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 
     if debug:
         logging.getLogger().setLevel("DEBUG")
-    # TODO: add quiet logging
 
     ctx.obj = PicGenerator(config_path=config_path)
 
@@ -116,9 +114,3 @@ def generate_mockups(config, template_name, design_path, output_path):
 
     generator = MockupGenerator(design_path, output_path, template_config)
     generator.generate()
-
-
-@picgenius.command
-@click.pass_obj
-def test_command(picgenerator):
-    print("TEST COMMAND")

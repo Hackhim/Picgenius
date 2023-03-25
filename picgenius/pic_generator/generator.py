@@ -1,7 +1,7 @@
 """Module for PicGenerator class declaration."""
 import yaml
 from jsonschema import validate
-
+from .mockup import Mockup
 
 CONFIG_SCHEMA = {
     "type": "object",
@@ -37,7 +37,7 @@ CONFIG_SCHEMA = {
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "required": ["elements"],
+                            "required": ["template_path", "elements"],
                             "properties": {
                                 "template_path": {"type": "string"},
                                 "elements": {
@@ -61,7 +61,7 @@ CONFIG_SCHEMA = {
                                         },
                                     },
                                 },
-                                "watermarking": {"type": "string"},
+                                "watermark": {"type": "string"},
                             },
                         },
                     },
@@ -148,5 +148,17 @@ class PicGenerator:
 
     def _load_mockups_from_config(self, config: dict) -> dict:
         mockups = {}
+        config_mockups = config.get("mockups", {})
+
+        for mockup_name, config_mockup in config_mockups.items():
+            mockups[mockup_name] = self._init_mockup_from_config(config_mockup)
 
         return mockups
+
+    def _init_mockup_from_config(self, config_mockup: dict) -> Mockup:
+        designs_count = config_mockup.get("designs-count", 0)
+        templates = config_mockup.get("templates", [])
+        watermarks = config_mockup.get("watermarks", None)
+        video = config_mockup.get("video", None)
+        mockup = Mockup(designs_count, templates, watermarks=watermarks, video=video)
+        return mockup
