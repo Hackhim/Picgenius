@@ -80,3 +80,23 @@ mockups:
       step: 1
       frames: 100
       fps: 24
+
+  4-designs:
+    designs-count: 4
+    templates:
+      - template_path: ./workdir/templates-1-design/1-bedroom.png
+        elements:
+          - position: [705, 255]
+            size: [658, 867]
+      - template_path: ./workdir/templates-1-design/2-cabinet.png
+        elements:
+          - position: [825, 176]
+            size: [868, 1247]
+      - template_path: ./workdir/templates-1-design/3-desktop.png
+        elements:
+          - position: [462, 268]
+            size: [727, 1029]
+      - template_path: ./workdir/templates-1-design/4-mac.png
+        elements:
+          - position: [1016, 114]
+            size: [751, 1086]

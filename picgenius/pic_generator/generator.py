@@ -1,6 +1,7 @@
 """Module for PicGenerator class declaration."""
 import logging
 import os
+import sys
 import yaml
 from PIL import Image
 from jsonschema import validate
@@ -152,7 +153,7 @@ class PicGenerator:
         self.formats = config.get("formats", [])
         self.mockups = self._load_mockups_from_config(config)
 
-    def _load_mockups_from_config(self, config: dict) -> dict:
+    def _load_mockups_from_config(self, config: dict) -> dict[str, Mockup]:
         mockups = {}
         config_mockups = config.get("mockups", {})
 
@@ -171,9 +172,7 @@ class PicGenerator:
 
     def generate_formatted_designs(self, design_path, output_dir: str):
         """Generate all formats for design."""
-        designs = [
-            Design(image, name) for image, name in utils.load_images(design_path)
-        ]
+        designs = self.load_designs(design_path)
 
         for design in designs:
             logging.info("Start design generation: %s", design.name)
@@ -184,6 +183,10 @@ class PicGenerator:
                     formatted_design, images_dir, design.name, inches
                 )
 
+    def load_designs(self, path: str) -> list[Design]:
+        """Returns a list of designs loaded from path."""
+        return [Design(image, name) for image, name in utils.load_images(path)]
+
     def create_formatted_designs_dir(self, output_dir: str, design_name: str) -> str:
         """Create the output directory for formatted designs."""
         images_dir = os.path.join(output_dir, design_name, "images")
@@ -192,7 +195,7 @@ class PicGenerator:
 
     def save_formatted_design(
         self, image: Image.Image, output_dir: str, name: str, inches: tuple[int, int]
-    ):
+    ) -> None:
         """Save the formatted design into the output_dir."""
         formatted_image_filename = f"{name}-{inches[0]}-{inches[1]}.png"
         formatted_image_path = os.path.join(
@@ -200,3 +203,84 @@ class PicGenerator:
             formatted_image_filename,
         )
         image.save(formatted_image_path)
+
+    def generate_mockup_templates(
+        self, mockup_name: str, design_path: str, output_dir: str
+    ) -> None:
+        """Generate all templates of a mockup.3"""
+        if mockup_name not in self.mockups:
+            logging.error("Mockup %s mockup_name} not found.", mockup_name)
+            sys.exit(-1)
+
+        mockup = self.mockups[mockup_name]
+
+        valid_paths = self._get_valid_design_paths(mockup, design_path)
+        for designs_path in valid_paths:
+            designs = self.load_designs(designs_path)
+            mockup.generate_templates(designs)
+            # TODO: Test it
+
+    def _get_valid_design_paths(self, mockup: Mockup, design_path: str) -> list[str]:
+        """"""
+        valid_paths = []
+        if mockup.designs_count == 1:
+            valid_paths.extend(self._get_paths_of_png_files(design_path))
+        else:
+            valid_paths.extend(
+                self._get_paths_of_dirs_containing_n_png_files(
+                    design_path, mockup.designs_count
+                )
+            )
+        return valid_paths
+
+    def _get_paths_of_png_files(self, design_path: str) -> list[str]:
+        """Returns a list of paths to png files."""
+        paths = []
+
+        is_png_file = os.path.isfile(design_path) and design_path.endswith(".png")
+        if is_png_file:
+            paths.append(design_path)
+        else:
+            paths.extend(
+                [
+                    os.path.join(design_path, filename)
+                    for filename in os.listdir(design_path)
+                    if filename.endswith(".png")
+                ]
+            )
+
+        return paths
+
+    def _get_paths_of_dirs_containing_n_png_files(
+        self, design_path: str, png_count: int
+    ):
+        paths = []
+
+        if not os.path.isdir(design_path):
+            return paths
+
+        if self._check_path_is_directory_with_n_png_files(design_path, png_count):
+            paths.append(design_path)
+        else:
+            directories = [
+                os.path.join(design_path, dir)
+                for dir in os.listdir(design_path)
+                if os.path.isdir(os.path.join(design_path, dir))
+            ]
+            paths.extend(
+                [
+                    directory
+                    for directory in directories
+                    if self._check_path_is_directory_with_n_png_files(
+                        os.path.join(directory), png_count
+                    )
+                ]
+            )
+
+        return paths
+
+    def _check_path_is_directory_with_n_png_files(self, path: str, count: int) -> bool:
+        return (
+            os.path.isdir(path)
+            and len([f for f in os.listdir(path) if f.endswith(".png")]) == count
+        )

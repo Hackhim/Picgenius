@@ -35,6 +35,3 @@ def extract_filename(path: str) -> tuple[str, str]:
     filename = os.path.basename(path)
     filename_without_extension = os.path.splitext(filename)[0]
     return (filename, filename_without_extension)
-
-
-# Image processing functions

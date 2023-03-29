@@ -8,40 +8,6 @@ import click
 from pic_generator import PicGenerator
 
 
-class Config:
-    """Config class that stores templates data and design formats."""
-
-    mockup_templates: dict = {}
-    design_formats: list = []
-
-    def __init__(
-        self,
-        config_json: Optional[dict] = None,
-        config_path: Optional[str] = None,
-    ) -> None:
-        if config_json is None and config_path is None:
-            raise AttributeError("Missing config_json or config_path attribute.")
-
-        config = config_json or {}
-        if config_json is None and config_path is not None:
-            config = self._read_config_file(config_path)
-
-        self._load_config_json(config)
-
-    def _load_config_json(self, config_json: dict) -> None:
-        self.mockup_templates = config_json.get("mockup_templates", {})
-        self.design_formats = config_json.get("design_formats", [])
-
-    def _read_config_file(self, config_path: str) -> dict:
-        """Load the specified config file."""
-        config_data = {}
-
-        with open(config_path, "r", encoding="utf-8") as f:
-            config_data = json.load(f)
-
-        return config_data
-
-
 @click.group
 @click.option("--config", "-f", "config_path", default="./picgenius.yml", type=str)
 @click.option("--debug", is_flag=True)
@@ -74,19 +40,14 @@ def picgenius(ctx, config_path: str, debug: bool):
 @click.pass_obj
 def format_design(picgenerator: PicGenerator, design_path: str, output_dir: str):
     """Format specified design(s) to the specified formats in the config file."""
-
     picgenerator.generate_formatted_designs(design_path, output_dir)
-    # generator = FormattedImageGenerator()
-    # generator.generate_formatted_designs(
-    #    design_path, output_path, config.design_formats
-    # )
 
 
 @picgenius.command
 @click.option(
-    "--template",
-    "-t",
-    "template_name",
+    "--mockup",
+    "-m",
+    "mockup_name",
     type=str,
     required=True,
     help="Template name to use, template should be defined in the config file.",
@@ -101,18 +62,13 @@ def format_design(picgenerator: PicGenerator, design_path: str, output_dir: str)
 @click.option(
     "--output",
     "-o",
-    "output_path",
+    "output_dir",
     default="./workdir/products",
     help="Path to output product images.",
 )
 @click.pass_obj
-def generate_mockups(config, template_name, design_path, output_path):
+def generate_mockups(
+    picgenerator: PicGenerator, mockup_name: str, design_path: str, output_dir: str
+):
     """Generate mockups for specified designs, using specified template."""
-
-    if template_name not in config.mockup_templates:
-        logging.error('Template name "%s" not found.', template_name)
-
-    template_config = config.mockup_templates[template_name]
-
-    generator = MockupGenerator(design_path, output_path, template_config)
-    generator.generate()
+    picgenerator.generate_mockup_templates(mockup_name, design_path, output_dir)

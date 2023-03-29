@@ -3,6 +3,7 @@ from typing import Optional
 from .template import Template
 from .watermark import Watermark
 from .video import Video
+from .design import Design
 
 
 class Mockup:
@@ -37,10 +38,17 @@ class Mockup:
         for template in config_templates:
             watermark = template.get("watermark")
 
-            if watermark is None or watermark not in self.watermarks:
+            if watermark is not None and watermark not in self.watermarks:
                 raise ValueError(f"Watermark {watermark} was not found.")
 
             elements = template.get("elements", [])
             template_path = template.get("template_path", "")
             templates.append(Template(template_path, elements, watermark=watermark))
         return templates
+
+    def generate_templates(self, designs: list[Design]):
+        """Generate all templates for a list of designs."""
+        # TODO
+        # Loop in templates
+        #  use as many designs it is needed for each template
+        #  loop to use almost once each design
