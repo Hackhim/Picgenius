@@ -2,6 +2,8 @@
 import logging
 import os
 import sys
+from typing import Iterable
+
 import yaml
 from PIL import Image
 from jsonschema import validate
@@ -207,7 +209,7 @@ class PicGenerator:
     def generate_mockup_templates(
         self, mockup_name: str, design_path: str, output_dir: str
     ) -> None:
-        """Generate all templates of a mockup.3"""
+        """Generate all templates of a mockup."""
         if mockup_name not in self.mockups:
             logging.error("Mockup %s mockup_name} not found.", mockup_name)
             sys.exit(-1)
@@ -216,9 +218,12 @@ class PicGenerator:
 
         valid_paths = self._get_valid_design_paths(mockup, design_path)
         for designs_path in valid_paths:
+            _, name = utils.extract_filename(designs_path)
+            mockup_dir = os.path.join(output_dir, name, "mockups")
+
             designs = self.load_designs(designs_path)
-            mockup.generate_templates(designs)
-            # TODO: Test it
+            templates = mockup.generate_templates(designs)
+            self.save_templates(templates, mockup_dir)
 
     def _get_valid_design_paths(self, mockup: Mockup, design_path: str) -> list[str]:
         """"""
@@ -284,3 +289,9 @@ class PicGenerator:
             os.path.isdir(path)
             and len([f for f in os.listdir(path) if f.endswith(".png")]) == count
         )
+
+    def save_templates(self, templates: Iterable, output_dir: str):
+        os.makedirs(output_dir, exist_ok=True)
+        for template, name in templates:
+            template_path = os.path.join(output_dir, name + ".png")
+            template.save(template_path)

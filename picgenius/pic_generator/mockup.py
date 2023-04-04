@@ -1,5 +1,5 @@
 """Module for Mockup class declaration."""
-from typing import Optional
+from typing import Optional, Generator
 from .template import Template
 from .watermark import Watermark
 from .video import Video
@@ -19,7 +19,7 @@ class Mockup:
 
         assert designs_count > 0
         self.designs_count = designs_count
-
+        self.design_index = 0
         self.watermarks = (
             self._init_watermarks(watermarks) if watermarks is not None else None
         )
@@ -37,18 +37,32 @@ class Mockup:
         templates = []
         for template in config_templates:
             watermark = template.get("watermark")
-
             if watermark is not None and watermark not in self.watermarks:
                 raise ValueError(f"Watermark {watermark} was not found.")
 
+            watermark_kwarg = {}
+            if self.watermarks is not None and watermark is not None:
+                watermark_kwarg["watermark"] = self.watermarks[watermark]
+
             elements = template.get("elements", [])
             template_path = template.get("template_path", "")
-            templates.append(Template(template_path, elements, watermark=watermark))
+            templates.append(Template(template_path, elements, **watermark_kwarg))
         return templates
 
-    def generate_templates(self, designs: list[Design]):
+    def generate_templates(self, designs: list[Design]) -> Generator:
         """Generate all templates for a list of designs."""
-        # TODO
-        # Loop in templates
-        #  use as many designs it is needed for each template
-        #  loop to use almost once each design
+        assert len(designs) == self.designs_count
+
+        self.design_index = 0
+        for template in self.templates:
+            next_designs = self.get_next_designs(designs, template.count_elements)
+            yield (template.generate_template(next_designs), template.name)
+
+    def get_next_designs(self, designs: list[Design], n_designs: int) -> list[Design]:
+        """Returns the next n designs starting from self.design_index."""
+        assert n_designs > 0
+        next_designs = []
+        for _ in range(n_designs):
+            next_designs.append(designs[self.design_index])
+            self.design_index = (self.design_index + 1) % self.designs_count
+        return next_designs
