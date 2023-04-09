@@ -1,5 +1,4 @@
 """Module to test Watermark Generation"""
-import pytest
 from PIL import Image
 
 from picgenius.models import Watermark, Textbox
@@ -12,8 +11,7 @@ class TestWatermarkRenderer:
     sample_image: Image.Image
     watermark: Watermark
 
-    @pytest.fixture(autouse=True)
-    def setup(self):
+    def setup_method(self):
         """Setup test data."""
         self.sample_image = Image.new("RGBA", (1000, 1000), (255, 255, 255))
         self.watermark = Watermark(

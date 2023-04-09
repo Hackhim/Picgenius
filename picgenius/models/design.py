@@ -1,14 +1,16 @@
 """Module for Design class declaration."""
 from PIL import Image
+from dataclasses import dataclass
 
 # from .defaults import Defaults
 # from . import processing as im
 
 
+@dataclass
 class Design:
     """Design has the responsibility to generate its formatted images."""
 
-    design_path: str
+    path: str
     name: str = ""
 
     # TODO: get name from design_path
