@@ -1,8 +1,10 @@
 """Module for Mockup class declaration."""
 from typing import Optional, Generator
+from moviepy.editor import ImageSequenceClip
+import numpy as np
 from .template import Template
 from .watermark import Watermark
-from .video import Video
+from .video_settings import Video
 from .design import Design
 
 
@@ -49,6 +51,13 @@ class Mockup:
             templates.append(Template(template_path, elements, **watermark_kwarg))
         return templates
 
+    def _init_video(self, config_video: dict) -> Video:
+        watermark = config_video.get("watermark")
+        if watermark is not None:
+
+        return Video(**config_video)
+
+
     def generate_templates(self, designs: list[Design]) -> Generator:
         """Generate all templates for a list of designs."""
         assert len(designs) == self.designs_count
@@ -66,3 +75,7 @@ class Mockup:
             next_designs.append(designs[self.design_index])
             self.design_index = (self.design_index + 1) % self.designs_count
         return next_designs
+
+    def generate_video(self, design: Design) -> ImageSequenceClip:
+        """"""
+        # TODO: make video generation

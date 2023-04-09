@@ -44,7 +44,7 @@ def paste_text_on_image(
     draw = ImageDraw.Draw(mask)
 
     if textbox_color is not None:
-        text_size = font.getsize(text)
+        text_size = get_text_size(font, text)
         padding = _format_padding(textbox_padding)
         textbox_pos = (
             pos[0] - padding[0],
@@ -97,3 +97,8 @@ def generate_video_frames(image: Image.Image, frames: int = 100, step=1):
         zoom_image = image.crop(zoom_region).resize(image.size, resample=Image.LANCZOS)
         images.append(zoom_image)
     return images
+
+
+def get_text_size(font: ImageFont.FreeTypeFont, text: str) -> tuple[int, int]:
+    """Returns the x, y size of a given font and text."""
+    return font.getbbox(text)[-2:]

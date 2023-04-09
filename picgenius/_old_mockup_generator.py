@@ -94,7 +94,6 @@ class MockupGenerator:
         return False
 
     def _list_design_paths(self) -> list[str]:
-
         if self.is_set_of_designs:
             if self.is_valid_dir:
                 return [self.design_path]
@@ -233,7 +232,7 @@ class MockupGenerator:
             textbox_kwargs["textbox_padding"] = textbox_padding
 
         text_position = self.get_text_position_from_watermarking(
-            image.size, font.getsize(text), watermarking, margin=margin
+            image.size, im.get_text_size(font, text), watermarking, margin=margin
         )
 
         watermarked = im.paste_text_on_image(

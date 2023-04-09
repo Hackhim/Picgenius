@@ -7,8 +7,7 @@ from typing import Iterable
 import yaml
 from PIL import Image
 from jsonschema import validate
-from .mockup import Mockup
-from .design import Design
+
 
 from . import utils
 
@@ -129,6 +128,7 @@ CONFIG_SCHEMA = {
                             "step": {"type": "number"},
                             "frames": {"type": "number"},
                             "fps": {"type": "number"},
+                            "watermark": {"type": "string"},
                         },
                     },
                 },
@@ -223,7 +223,7 @@ class PicGenerator:
 
             designs = self.load_designs(designs_path)
             templates = mockup.generate_templates(designs)
-            self.save_templates(templates, mockup_dir)
+            self._save_templates(templates, mockup_dir)
 
     def _get_valid_design_paths(self, mockup: Mockup, design_path: str) -> list[str]:
         """"""
@@ -290,7 +290,7 @@ class PicGenerator:
             and len([f for f in os.listdir(path) if f.endswith(".png")]) == count
         )
 
-    def save_templates(self, templates: Iterable, output_dir: str):
+    def _save_templates(self, templates: Iterable, output_dir: str):
         os.makedirs(output_dir, exist_ok=True)
         for template, name in templates:
             template_path = os.path.join(output_dir, name + ".png")

@@ -1,41 +1,26 @@
-global:
-  formats:
-    - ppi: 300
-      inches: [8, 10]
-    - ppi: 300
-      inches: [11, 14]
-    - ppi: 300
-      inches: [16, 20]
-    - ppi: 300
-      inches: [20, 24]
-    - ppi: 300
-      inches: [24, 34]
-    - ppi: 300
-      inches: [30, 40]
-  watermarks:
-    default:
-      font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
-      text: SIMAAKER SHOP
-      color: [255, 255, 255, 70]
-      position: [center, center]
-      width: 70%
-product_types:
+formats:
+  - ppi: 300
+    inches: [8, 10]
+  - ppi: 300
+    inches: [11, 14]
+  - ppi: 300
+    inches: [16, 20]
+  - ppi: 300
+    inches: [20, 24]
+  - ppi: 300
+    inches: [24, 34]
+  - ppi: 300
+    inches: [30, 40]
+mockups:
   1-design:
     designs-count: 1
-    formats:
-      - ppi: 300
-        inches: [8, 10]
-      - ppi: 300
-        inches: [11, 14]
-      - ppi: 300
-        inches: [16, 20]
-      - ppi: 300
-        inches: [20, 24]
-      - ppi: 300
-        inches: [24, 34]
-      - ppi: 300
-        inches: [30, 40]
     watermarks:
+      default:
+        font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
+        text: SIMAAKER SHOP
+        color: [255, 255, 255, 70]
+        position: [center, center]
+        width: 70%
       center-textbox:
         font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
         text: SIMAAKER SHOP
@@ -98,6 +83,13 @@ product_types:
 
   4-designs:
     designs-count: 4
+    watermarks:
+      default:
+        font_path: ./workdir/CS_Gordon/CS Gordon Vintage.otf
+        text: SIMAAKER SHOP
+        color: [255, 255, 255, 70]
+        position: [center, center]
+        width: 70%
     templates:
       - template_path: ./workdir/templates-4-designs/1-base.png
         elements:
