@@ -1,6 +1,7 @@
 """Module for Video class declaration."""
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, ClassVar
+from picgenius.models import Watermark
 
 
 @dataclass
@@ -11,9 +12,11 @@ class VideoSettings:
     step: int = 1
     frames: int = 100
     fps: int = 24
-    start_zoom: Optional[str] = None
+    format: tuple[int, int] = (2000, 2000)
+    start_zoom: int = 100
+    watermark: Optional[Watermark] = None
 
-    _AVAILABLE_MOVEMENTS: list[str] = [
+    _AVAILABLE_MOVEMENTS: ClassVar[list[str]] = [
         "zoom_in",
         "zoom_out",
         "slide_left",

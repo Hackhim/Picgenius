@@ -1,10 +1,6 @@
 """Module to define image processing functions."""
-import os
-import logging
 from typing import Optional
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import ImageSequenceClip
-import numpy as np
 
 
 def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
@@ -84,19 +80,6 @@ def find_font_size(text: str, font_path: str, max_width):
         font_size += 1
         font = ImageFont.truetype(font_path, font_size)
     return font
-
-
-def generate_video_frames(image: Image.Image, frames: int = 100, step=1):
-    """Generate the frames for the video."""
-    images = []
-    for i in range(0, frames, step):
-        tl = i
-        br = image.width - i
-
-        zoom_region = (tl, tl, br, br)
-        zoom_image = image.crop(zoom_region).resize(image.size, resample=Image.LANCZOS)
-        images.append(zoom_image)
-    return images
 
 
 def get_text_size(font: ImageFont.FreeTypeFont, text: str) -> tuple[int, int]:
