@@ -1,4 +1,5 @@
 """Module for TemplateRenderer class declaration."""
+from typing import Generator
 from PIL import Image
 
 from picgenius import processing as im
@@ -13,7 +14,36 @@ class TemplateRenderer:
     """
 
     @staticmethod
-    def generate_templates(template: Template, designs: list[Design]) -> Image.Image:
+    def generate_templates(
+        templates: list[Template], designs: list[Design]
+    ) -> Generator:
+        """Generate all templates for the given list of designs."""
+        design_index = 0
+        for template in templates:
+            design_index, next_designs = TemplateRenderer._get_next_designs(
+                designs,
+                design_index,
+                len(template.elements),
+            )
+            yield (TemplateRenderer.generate_template(template, next_designs), template)
+
+    @staticmethod
+    def _get_next_designs(
+        designs: list[Design], start_index: int, n_designs: int
+    ) -> tuple[int, list[Design]]:
+        """Returns the next n designs starting from self.design_index."""
+        assert n_designs > 0
+        designs_count = len(designs)
+        design_index = start_index
+        next_designs = []
+
+        for _ in range(n_designs):
+            next_designs.append(designs[design_index])
+            design_index = (design_index + 1) % designs_count
+        return (design_index, next_designs)
+
+    @staticmethod
+    def generate_template(template: Template, designs: list[Design]) -> Image.Image:
         """
         Fits the designs in the template, and apply optional watermark.
 

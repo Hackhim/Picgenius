@@ -27,10 +27,10 @@ class TestTemplateRenderer:
         )
         self.output_path = "./tests/workdir/output/test-template-render.png"
 
-    def test_generate_templates(self):
+    def test_generate_template(self):
         """Test generate_templates"""
         designs = [self.design1, self.design2]
-        result = TemplateRenderer.generate_templates(self.template, designs)
+        result = TemplateRenderer.generate_template(self.template, designs)
 
         assert isinstance(result, Image.Image)
         result.save(self.output_path)

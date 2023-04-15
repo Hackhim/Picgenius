@@ -23,3 +23,7 @@ class VideoSettings:
         "slide_right",
         "random",
     ]
+
+    def __post_init__(self):
+        if self.movement not in self._AVAILABLE_MOVEMENTS:
+            raise AttributeError(f"{self.movement} isn't a valid value.")

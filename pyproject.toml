@@ -24,4 +24,4 @@ license = {text = "MIT"}
 
 [tool.pdm.scripts]
 start = "python picgenius"
-test = "pytest"
+test = "pytest -s"

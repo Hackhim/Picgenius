@@ -29,7 +29,6 @@ class VideoRenderer:
         # TODO: frames = VideoRenderer._generate_movement_frames(base_image, video_settings)
         np_frames = [np.array(img) for img in frames]
         video = ImageSequenceClip(np_frames, fps=20)
-        # clip.write_videofile(video_path, verbose=False, logger=None)
         return video
 
     @staticmethod

@@ -13,6 +13,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from picgenius import utils
 from .watermark import Watermark
 
 
@@ -28,6 +29,11 @@ class TemplateElement:
 class Template:
     """Template data."""
 
-    path: str
     elements: list[TemplateElement]
+    path: str
+    name: str = ""
     watermark: Optional[Watermark] = None
+
+    def __post_init__(self):
+        _, name = utils.extract_filename(self.path)
+        self.name = name

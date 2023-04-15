@@ -1,7 +1,7 @@
 """Module for Product class declaration."""
+from dataclasses import dataclass, field
 
-from dataclasses import dataclass
-
+from picgenius import utils
 from .product_type import ProductType
 
 
@@ -9,20 +9,26 @@ from .product_type import ProductType
 class Design:
     """Design has the responsibility to generate its formatted images."""
 
-    design_path: str
+    path: str
     name: str = ""
+
+    def __post_init__(self):
+        _, name = utils.extract_filename(self.path)
+        self.name = name
 
 
 @dataclass
 class Product:
     """Product's concern is to be the root of generating its visuals and formatted designs."""
 
-    design_path: str
     type: ProductType
-    name: str = ""
-    designs: list[Design] = []
+    design_path: str
+    name: str = field(init=False)
+    designs: list[Design] = field(init=False)
 
-    # TODO: get the product name from design_path
-    # TODO: create designs
-    # TODO: check that design_path accords to product_type (design count)
-    # TODO: create generation function
+    def __post_init__(self):
+        _, name = utils.extract_filename(self.design_path)
+        self.name = name
+        self.designs = []
+        for design_path in utils.get_paths_of_png_files(self.design_path):
+            self.designs.append(Design(design_path))

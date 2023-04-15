@@ -5,3 +5,4 @@ Renderers have the concern to run the logic to generate the products, templates 
 from .watermark import WatermarkRenderer
 from .template import TemplateRenderer
 from .video import VideoRenderer
+from .product import ProductRenderer

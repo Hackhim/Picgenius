@@ -13,7 +13,7 @@ class Format:
     """Format data."""
 
     ppi: int
-    inches: int
+    inches: tuple[int, int]
 
 
 @dataclass
@@ -25,5 +25,6 @@ class ProductType:
 
     designs_count: int
     templates: list[Template]
+    formats: list[Format]
     watermarks: Optional[list[Watermark]] = None
     video_settings: Optional[VideoSettings] = None
