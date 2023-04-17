@@ -1,7 +1,7 @@
 """Module for Watermark class declaration."""
 from typing import Optional, ClassVar
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
