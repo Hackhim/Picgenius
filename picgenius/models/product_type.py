@@ -26,5 +26,5 @@ class ProductType:
     designs_count: int
     templates: list[Template]
     formats: list[Format]
-    watermarks: Optional[list[Watermark]] = None
+    watermarks: Optional[dict[str, Watermark]] = None
     video_settings: Optional[VideoSettings] = None
