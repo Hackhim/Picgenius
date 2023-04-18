@@ -103,7 +103,7 @@ class ConfigLoader:
         if textbox is not None:
             textbox = Textbox(**textbox)
             kwargs["textbox"] = textbox
-        return Watermark(**watermark_data)
+        return Watermark(**kwargs)
 
     def _create_video_settings_from_product_type(
         self, product_type_data: dict, watermarks: dict[str, Watermark]

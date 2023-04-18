@@ -90,7 +90,7 @@ product_types:
             size: [1154, 1494]
         watermark: small-bottom-right
     video:
-      movement: zoom-in
+      movement: zoom_in
       start_zoom: 10%
       step: 1
       frames: 100

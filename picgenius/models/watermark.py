@@ -11,6 +11,10 @@ class Textbox:
     padding: tuple[int, int, int, int]
     color: tuple[int, int, int, int]
 
+    def __post_init__(self):
+        self.padding = tuple(self.padding)
+        self.color = tuple(self.color)
+
 
 @dataclass
 class Watermark:
@@ -26,3 +30,6 @@ class Watermark:
 
     AVAILABLE_X_POS: ClassVar[list[str]] = ["left", "center", "right"]
     AVAILABLE_Y_POS: ClassVar[list[str]] = ["top", "center", "bottom"]
+
+    def __post_init__(self):
+        self.color = tuple(self.color)

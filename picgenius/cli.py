@@ -1,11 +1,23 @@
 """Entry point to use the picgenius cli tool."""
-import json
 import logging
-from typing import Optional
+from dataclasses import dataclass, field
+
 import click
 
-# from pic_generator import MockupGenerator, FormattedImageGenerator
-from pic_generator import PicGenerator
+from picgenius.config import ConfigLoader
+from picgenius.models import Product, ProductType
+from picgenius.renderers import ProductRenderer
+
+
+@dataclass
+class ContextObject:
+    """Context object to pass between commands."""
+
+    config: ConfigLoader
+    product_types: dict[str, ProductType]
+    selected_product_type: ProductType = field(init=False)
+    design_path: str = field(init=False)
+    output_dir: str = field(init=False)
 
 
 @click.group
@@ -19,38 +31,19 @@ def picgenius(ctx, config_path: str, debug: bool):
     if debug:
         logging.getLogger().setLevel("DEBUG")
 
-    ctx.obj = PicGenerator(config_path=config_path)
+    config_loader = ConfigLoader(config_path)
+    context_object = ContextObject(config_loader, config_loader.load())
+    ctx.obj = context_object
 
 
-@picgenius.command
+@picgenius.group
 @click.option(
-    "--design",
-    "-d",
-    "design_path",
-    default="./workdir/designs",
-    help="Path to designs folder or design file.",
-)
-@click.option(
-    "--output",
-    "-o",
-    "output_dir",
-    default="./workdir/products",
-    help="Path to output directory product images.",
-)
-@click.pass_obj
-def format_design(picgenerator: PicGenerator, design_path: str, output_dir: str):
-    """Format specified design(s) to the specified formats in the config file."""
-    picgenerator.generate_formatted_designs(design_path, output_dir)
-
-
-@picgenius.command
-@click.option(
-    "--mockup",
-    "-m",
-    "mockup_name",
+    "--product-type",
+    "-p",
+    "product_type_name",
     type=str,
     required=True,
-    help="Template name to use, template should be defined in the config file.",
+    help="Product type to use, product type must be defined in the config file.",
 )
 @click.option(
     "--design",
@@ -64,11 +57,29 @@ def format_design(picgenerator: PicGenerator, design_path: str, output_dir: str)
     "-o",
     "output_dir",
     default="./workdir/products",
-    help="Path to output product images.",
+    help="Output directory.",
 )
 @click.pass_obj
-def generate_mockups(
-    picgenerator: PicGenerator, mockup_name: str, design_path: str, output_dir: str
+def generate(
+    context_object: ContextObject,
+    product_type_name: str,
+    design_path: str,
+    output_dir: str,
 ):
-    """Generate mockups for specified designs, using specified template."""
-    picgenerator.generate_mockup_templates(mockup_name, design_path, output_dir)
+    """Generate selected medias."""
+    product_type = context_object.product_types.get(product_type_name)
+    if product_type is None:
+        raise ValueError(f'Product type "{product_type_name}" doesn\'t exist.')
+
+    context_object.selected_product_type = product_type
+    context_object.design_path = design_path
+    context_object.output_dir = output_dir
+
+
+@generate.command
+@click.pass_obj
+def all_medias(context_object: ContextObject):
+    """Generate all medias of product type."""
+
+    product = Product(context_object.selected_product_type, context_object.design_path)
+    ProductRenderer.generate_product_templates(product, context_object.output_dir)

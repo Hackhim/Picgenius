@@ -32,3 +32,9 @@ class Product:
         self.designs = []
         for design_path in utils.get_paths_of_png_files(self.design_path):
             self.designs.append(Design(design_path))
+
+        if len(self.designs) != self.type.designs_count:
+            raise AttributeError(
+                "The number of product designs doesn't match the product type count: "
+                f"{len(self.designs)} != {self.type.designs_count}"
+            )
