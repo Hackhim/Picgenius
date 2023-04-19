@@ -18,7 +18,7 @@ class ProductRenderer:
     VIDEO_FILENAME = "video.mp4"
 
     @staticmethod
-    def generate_product_templates(product: Product, output_dir: str):
+    def generate_templates(product: Product, output_dir: str):
         """Generate product templates."""
 
         output_dir = ProductRenderer.prepare_visuals_output_dir(output_dir, product)
@@ -29,7 +29,7 @@ class ProductRenderer:
             generated_visual.save(output_path)
 
     @staticmethod
-    def generate_product_video(
+    def generate_video(
         product: Product,
         output_dir: str,
         design_index: int = 0,

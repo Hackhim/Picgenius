@@ -5,8 +5,8 @@ from dataclasses import dataclass, field
 import click
 
 from picgenius.config import ConfigLoader
-from picgenius.models import Product, ProductType
-from picgenius.renderers import ProductRenderer
+from picgenius.models import ProductType
+from picgenius.controller import Controller
 
 
 @dataclass
@@ -50,14 +50,14 @@ def picgenius(ctx, config_path: str, debug: bool):
     "-d",
     "design_path",
     default="./workdir/designs",
-    help="Path to designs folder or design file.",
+    help="Path to designs folder or design file. Default: ./workdir/designs",
 )
 @click.option(
     "--output",
     "-o",
     "output_dir",
     default="./workdir/products",
-    help="Output directory.",
+    help="Output directory. Default: ./workdir/products",
 )
 @click.pass_obj
 def generate(
@@ -81,5 +81,8 @@ def generate(
 def all_medias(context_object: ContextObject):
     """Generate all medias of product type."""
 
-    product = Product(context_object.selected_product_type, context_object.design_path)
-    ProductRenderer.generate_product_templates(product, context_object.output_dir)
+    product_type = context_object.selected_product_type
+    design_path = context_object.design_path
+    output_dir = context_object.output_dir
+
+    Controller.generate_all_assets(product_type, design_path, output_dir)

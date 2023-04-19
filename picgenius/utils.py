@@ -37,65 +37,50 @@ def extract_filename(path: str) -> tuple[str, str]:
     return (filename, filename_without_extension)
 
 
-def get_valid_design_paths(design_path: str, designs_count: int) -> list[str]:
-    """Get valid png paths according to designs_count."""
-    valid_paths = []
+def find_product_paths(designs_count: int, design_path: str) -> list[str]:
+    """Find designs paths according to the given design count."""
     if designs_count == 1:
-        valid_paths.extend(get_paths_of_png_files(design_path))
+        return find_png_file_paths(design_path)
     else:
-        valid_paths.extend(
-            _get_paths_of_dirs_containing_n_png_files(design_path, designs_count)
-        )
-    return valid_paths
+        return find_directories_with_n_png_files(design_path, designs_count)
 
 
-def get_paths_of_png_files(design_path: str) -> list[str]:
+def find_png_file_paths(design_path: str) -> list[str]:
     """Returns a list of paths to png files."""
-    paths = []
 
     is_png_file = os.path.isfile(design_path) and design_path.endswith(".png")
     if is_png_file:
-        paths.append(design_path)
-    else:
-        paths.extend(
-            [
-                os.path.join(design_path, filename)
-                for filename in os.listdir(design_path)
-                if filename.endswith(".png")
-            ]
-        )
+        return [design_path]
 
-    return paths
+    return [
+        os.path.join(design_path, filename)
+        for filename in os.listdir(design_path)
+        if filename.endswith(".png")
+    ]
 
 
-def _get_paths_of_dirs_containing_n_png_files(design_path: str, png_count: int):
-    paths = []
-
+def find_directories_with_n_png_files(design_path: str, png_count: int):
+    """Find directories that contains n png files."""
     if not os.path.isdir(design_path):
-        return paths
+        return []
 
-    if _check_path_is_directory_with_n_png_files(design_path, png_count):
-        paths.append(design_path)
-    else:
-        directories = [
-            os.path.join(design_path, dir)
-            for dir in os.listdir(design_path)
-            if os.path.isdir(os.path.join(design_path, dir))
-        ]
-        paths.extend(
-            [
-                directory
-                for directory in directories
-                if _check_path_is_directory_with_n_png_files(
-                    os.path.join(directory), png_count
-                )
-            ]
-        )
+    if is_directory_with_n_png_files(design_path, png_count):
+        return [design_path]
 
-    return paths
+    directories = [
+        os.path.join(design_path, dir)
+        for dir in os.listdir(design_path)
+        if os.path.isdir(os.path.join(design_path, dir))
+    ]
+    return [
+        directory
+        for directory in directories
+        if is_directory_with_n_png_files(directory, png_count)
+    ]
 
 
-def _check_path_is_directory_with_n_png_files(path: str, count: int) -> bool:
+def is_directory_with_n_png_files(path: str, count: int) -> bool:
+    """Returns if the given directory has x png files."""
     return (
         os.path.isdir(path)
         and len([f for f in os.listdir(path) if f.endswith(".png")]) == count
