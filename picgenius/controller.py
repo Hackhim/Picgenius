@@ -20,7 +20,6 @@ class Controller:
 
     def generate_all_assets(self, output_dir: str):
         """Create products from design_path, then generate all assets"""
-
         for product in self.products:
             self.format_product_designs(product, output_dir)
             self.generate_product_templates(product, output_dir)
