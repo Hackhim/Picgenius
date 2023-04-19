@@ -1,6 +1,8 @@
 """Module for TemplateRenderer class declaration."""
 from typing import Generator
 from PIL import Image
+import numpy as np
+import cv2
 
 from picgenius import processing as im
 from picgenius.models import Template, Design
@@ -61,9 +63,19 @@ class TemplateRenderer:
             size = element.size
 
             design_image = Image.open(design.path)
-            TemplateRenderer._fit_design_in_template(
-                template_image, design_image, position, size
-            )
+            if len(position) == 2 and size is not None:
+                TemplateRenderer._fit_design_in_template(
+                    template_image, design_image, position, size
+                )
+            elif len(position) == 4:
+                # TODO: create function that transform and paste the image
+                TemplateRenderer._fit_design_in_transformed_template(
+                    template_image, design_image, position, size
+                )
+            else:
+                raise ValueError(
+                    f'Template "{template.name}" has incorrect elements values.'
+                )
 
         if template.watermark is not None:
             template_image = WatermarkRenderer.apply_watermarking(
@@ -94,4 +106,81 @@ class TemplateRenderer:
         """
         resized_design = im.resize_and_crop(design, *size)
         template.paste(resized_design, position)
+        return template
+
+    @staticmethod
+    def _fit_design_in_transformed_template(
+        template: Image.Image,
+        design: Image.Image,
+        position: tuple[
+            tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
+        ],
+        size: tuple[int, int],
+    ) -> Image.Image:
+        """
+        Paste the specified design on the specified transformed template.
+
+        Args:
+            template (Image.Image): The template image to paste the design onto.
+            design (Image.Image): The design image to be pasted.
+            position (Tuple[int, int, int, int, int, int, int, int]): The coordinates of the four corners
+            of the design's position in the template.
+            size (Tuple[int, int]): The desired width and height for the design image.
+
+        Returns:
+            Image.Image: The template image with the design pasted.
+        """
+        """resized_design = im.resize_and_crop(design, *size)
+
+        # Calculate the transformation matrix
+        tl, tr, bl, br = position
+        width, height = size
+        ## CV2 Version
+        input_points = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
+        output_points = np.float32([tl, tr, bl, br])
+        matrix = cv2.getPerspectiveTransform(input_points, output_points)
+
+        print("TRANSFORMED")
+        # Apply the transformation to the design
+        transformed_design = design.transform(
+            size,
+            Image.PERSPECTIVE,
+            data=np.array(matrix).flatten(),
+            resample=Image.BICUBIC,
+        )
+
+        # Paste the transformed design onto the template
+        template.paste(transformed_design, tl, transformed_design)
+        return template"""
+        # resized_design = im.resize_and_crop(design, *size)
+
+        # Calculate the transformation matrix
+        tl, tr, bl, br = position
+        width, height = design.size
+
+        frame = np.array(design.convert("RGB"))
+        input_points = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
+        output_points = np.float32([tl, tr, bl, br])
+        matrix = cv2.getPerspectiveTransform(input_points, output_points)
+        # result = cv2.warpPerspective(frame, matrix, (0, 0))
+        # transformed_design = Image.fromarray(result)
+        # Apply the transformation to the design
+        transformed_design = design.transform(
+            design.size,
+            Image.PERSPECTIVE,
+            data=np.array(matrix).flatten(),
+            resample=Image.BICUBIC,
+        )
+
+        # Extract and transform the alpha channel
+        # alpha_channel = design.split()[-1]
+        # transformed_alpha = alpha_channel.transform(
+        #    size,
+        #    Image.PERSPECTIVE,
+        #    data=np.array(matrix).flatten(),
+        #    resample=Image.BICUBIC,
+        # )
+
+        # Paste the transformed design onto the template using the transformed alpha channel as a mask
+        template.paste(transformed_design, tl)
         return template
