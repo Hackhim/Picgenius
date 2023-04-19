@@ -18,21 +18,8 @@ class ProductRenderer:
     VISUALS_FOLDER = "visuals"
     VIDEO_FILENAME = "video.mp4"
 
-    MAX_THREADS = 10
-
-    # @staticmethod
-    # def generate_templates(product: Product, output_dir: str):
-    #    """Generate product templates."""
-    #
-    #    output_dir = ProductRenderer.prepare_visuals_output_dir(output_dir, product)
-    #    for generated_visual, template in TemplateRenderer.generate_templates(
-    #        product.type.templates, product.designs
-    #    ):
-    #        output_path = os.path.join(output_dir, f"{template.name}.png")
-    #        generated_visual.save(output_path)
-
     @staticmethod
-    def generate_templates(product: Product, output_dir: str):
+    def generate_templates(product: Product, output_dir: str, max_threads: int = 10):
         """Generate product templates."""
 
         def save_template(visual_template, template_name):
@@ -41,7 +28,7 @@ class ProductRenderer:
 
         output_dir = ProductRenderer.prepare_visuals_output_dir(output_dir, product)
 
-        with ThreadPoolExecutor(max_workers=ProductRenderer.MAX_THREADS) as executor:
+        with ThreadPoolExecutor(max_workers=max_threads) as executor:
             futures = []
             for generated_visual, template in TemplateRenderer.generate_templates(
                 product.type.templates, product.designs
@@ -76,29 +63,10 @@ class ProductRenderer:
         video = VideoRenderer.generate_video(image, product.type.video_settings)
         video.write_videofile(output_path, verbose=False, logger=None)
 
-    #    @staticmethod
-    #    def generate_formatted_designs(product: Product, output_dir: str):
-    #        """Generate formatted designs."""
-    #        for design in product.designs:
-    #            formats = product.type.formats
-    #            design_name = design.name if len(formats) > 1 else ""
-    #
-    #            formatted_dir = ProductRenderer.prepare_formatted_output_dir(
-    #                output_dir, product, design_name
-    #            )
-    #
-    #            formatted_designs = ProductRenderer._generate_formats_for_design(
-    #                design,
-    #                formats,
-    #            )
-    #
-    #            for formatted_image, filename in formatted_designs:
-    #                output_path = os.path.join(formatted_dir, filename)
-    #                formatted_image.save(output_path)
-    #                formatted_image.close()
-
     @staticmethod
-    def generate_formatted_designs(product: Product, output_dir: str):
+    def generate_formatted_designs(
+        product: Product, output_dir: str, max_threads: int = 10
+    ):
         """Generate formatted designs."""
 
         def save_formatted_image(formatted_image, formatted_dir, filename):
@@ -119,9 +87,7 @@ class ProductRenderer:
                 formats,
             )
 
-            with ThreadPoolExecutor(
-                max_workers=ProductRenderer.MAX_THREADS
-            ) as executor:
+            with ThreadPoolExecutor(max_workers=max_threads) as executor:
                 futures = []
                 for formatted_image, filename in formatted_designs:
                     future = executor.submit(

@@ -1,4 +1,5 @@
 """Module for Controller class declaration."""
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from picgenius.models import ProductType, Product
 from picgenius.renderers import ProductRenderer
 from picgenius.logger import PicGeniusLogger
@@ -18,32 +19,38 @@ class Controller:
         self.products = Controller.create_products(product_type, design_path)
         self.logger = PicGeniusLogger()
 
-    def generate_all_assets(self, output_dir: str):
+    def generate_all_assets(self, output_dir: str, max_threads: int = 4):
         """Create products from design_path, then generate all assets"""
-        for product in self.products:
-            self.format_product_designs(product, output_dir)
-            self.generate_product_templates(product, output_dir)
-            self.generate_product_video(product, output_dir)
 
-    def format_product_designs(self, product: Product, output_dir: str):
-        """Generate formatted designs for the given product."""
+        with ThreadPoolExecutor(max_threads) as executor:
+            futures_to_products = {
+                executor.submit(
+                    self.process_product_generation, product, output_dir
+                ): product
+                for product in self.products
+            }
+
+            for future in as_completed(futures_to_products):
+                future.result()
+
+    def process_product_generation(self, product: Product, output_dir: str):
+        """Process the generation of all assets for the given product."""
+
         self.logger.info(
-            "Start %s formatted design generation to: %s", product.name, output_dir
+            "Start product generation: %s (to: %s)",
+            product.name,
+            output_dir,
         )
-        ProductRenderer.generate_formatted_designs(product, output_dir)
-
-    def generate_product_templates(self, product: Product, output_dir: str):
-        """Generate product templates."""
-
-        self.logger.info(
-            "Start %s templates generation to: %s", product.name, output_dir
+        count_formats = len(product.type.formats)
+        count_templates = len(product.type.templates)
+        ProductRenderer.generate_formatted_designs(
+            product, output_dir, max_threads=count_formats
         )
-        ProductRenderer.generate_templates(product, output_dir)
-
-    def generate_product_video(self, product: Product, output_dir: str):
-        """Generate product video."""
-        self.logger.info("Start %s video generation to: %s", product.name, output_dir)
+        ProductRenderer.generate_templates(
+            product, output_dir, max_threads=count_templates
+        )
         ProductRenderer.generate_video(product, output_dir)
+        self.logger.info("Done %s", product.name)
 
     @staticmethod
     def create_products(product_type: ProductType, design_path: str) -> list[Product]:
