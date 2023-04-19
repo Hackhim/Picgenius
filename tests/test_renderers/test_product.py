@@ -1,9 +1,5 @@
 """Module to test ProductRenderer."""
 import os
-import shutil
-from PIL import Image
-
-import pytest
 
 from picgenius.models import (
     Product,
@@ -80,7 +76,7 @@ class TestProductRenderer:
     def test_generate_product_templates(self):
         """Test templates generation."""
         product = self.product
-        ProductRenderer.generate_product_templates(product, self.OUTPUT_DIR)
+        ProductRenderer.generate_templates(product, self.OUTPUT_DIR)
 
         assert os.path.exists(
             os.path.join(
@@ -102,7 +98,7 @@ class TestProductRenderer:
     def test_generate_product_video(self):
         """Test video generation."""
         product = self.product
-        ProductRenderer.generate_product_video(product, self.OUTPUT_DIR)
+        ProductRenderer.generate_video(product, self.OUTPUT_DIR)
 
         # Assert that the output video file was created
         assert os.path.exists(
