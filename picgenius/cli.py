@@ -1,5 +1,4 @@
 """Entry point to use the picgenius cli tool."""
-import logging
 from dataclasses import dataclass, field
 
 import click
@@ -7,6 +6,7 @@ import click
 from picgenius.config import ConfigLoader
 from picgenius.models import ProductType
 from picgenius.controller import Controller
+from picgenius.logger import PicGeniusLogger
 
 
 @dataclass
@@ -26,10 +26,9 @@ class ContextObject:
 @click.pass_context
 def picgenius(ctx, config_path: str, debug: bool):
     """Root group for pic genius commands."""
-    logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
-
+    logger = PicGeniusLogger()
     if debug:
-        logging.getLogger().setLevel("DEBUG")
+        logger.setLevel("DEBUG")
 
     config_loader = ConfigLoader(config_path)
     context_object = ContextObject(config_loader, config_loader.load())
@@ -85,4 +84,5 @@ def all_medias(context_object: ContextObject):
     design_path = context_object.design_path
     output_dir = context_object.output_dir
 
-    Controller.generate_all_assets(product_type, design_path, output_dir)
+    controller = Controller(product_type, design_path)
+    controller.generate_all_assets(output_dir)

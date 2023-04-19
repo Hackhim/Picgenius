@@ -69,7 +69,7 @@ def _format_padding(
     elif isinstance(textbox_padding, tuple) and len(textbox_padding) == 4:
         return textbox_padding
     else:
-        raise ValueError(f"textbox_padding must be an int or tuple.")
+        raise ValueError("textbox_padding must be an int or tuple.")
 
 
 def find_font_size(text: str, font_path: str, max_width):
