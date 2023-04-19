@@ -68,9 +68,8 @@ class TemplateRenderer:
                     template_image, design_image, position, size
                 )
             elif len(position) == 4:
-                # TODO: create function that transform and paste the image
                 TemplateRenderer._fit_design_in_transformed_template(
-                    template_image, design_image, position, size
+                    template_image, design_image, position
                 )
             else:
                 raise ValueError(
@@ -115,7 +114,6 @@ class TemplateRenderer:
         position: tuple[
             tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
         ],
-        size: tuple[int, int],
     ) -> Image.Image:
         """
         Paste the specified design on the specified transformed template.
@@ -130,57 +128,46 @@ class TemplateRenderer:
         Returns:
             Image.Image: The template image with the design pasted.
         """
-        """resized_design = im.resize_and_crop(design, *size)
-
-        # Calculate the transformation matrix
-        tl, tr, bl, br = position
-        width, height = size
-        ## CV2 Version
-        input_points = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
-        output_points = np.float32([tl, tr, bl, br])
-        matrix = cv2.getPerspectiveTransform(input_points, output_points)
-
-        print("TRANSFORMED")
-        # Apply the transformation to the design
-        transformed_design = design.transform(
-            size,
-            Image.PERSPECTIVE,
-            data=np.array(matrix).flatten(),
-            resample=Image.BICUBIC,
-        )
-
-        # Paste the transformed design onto the template
-        template.paste(transformed_design, tl, transformed_design)
-        return template"""
-        # resized_design = im.resize_and_crop(design, *size)
+        # resized_design = im.resize_and_crop(design, *template.size)
 
         # Calculate the transformation matrix
         tl, tr, bl, br = position
         width, height = design.size
+        input_points = [(0, 0), (width, 0), (0, height), (width, height)]
+        output_points = [tl, tr, bl, br]
+        coeffs = find_coeffs(input_points, output_points)
 
-        frame = np.array(design.convert("RGB"))
-        input_points = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
-        output_points = np.float32([tl, tr, bl, br])
-        matrix = cv2.getPerspectiveTransform(input_points, output_points)
-        # result = cv2.warpPerspective(frame, matrix, (0, 0))
-        # transformed_design = Image.fromarray(result)
         # Apply the transformation to the design
-        transformed_design = design.transform(
-            design.size,
-            Image.PERSPECTIVE,
-            data=np.array(matrix).flatten(),
-            resample=Image.BICUBIC,
-        )
+        transformed_design = perspective_transform(design, coeffs)
 
         # Extract and transform the alpha channel
-        # alpha_channel = design.split()[-1]
-        # transformed_alpha = alpha_channel.transform(
-        #    size,
-        #    Image.PERSPECTIVE,
-        #    data=np.array(matrix).flatten(),
-        #    resample=Image.BICUBIC,
-        # )
+        alpha_channel = design.split()[-1]
+        transformed_alpha = perspective_transform(alpha_channel, coeffs)
 
         # Paste the transformed design onto the template using the transformed alpha channel as a mask
-        template.paste(transformed_design, tl)
+        template.paste(transformed_design.convert("RGBA"), (0, 0), transformed_alpha)
         return template
+
+
+def find_coeffs(source_coords, target_coords):
+    matrix = []
+    for s, t in zip(source_coords, target_coords):
+        matrix.extend(
+            [
+                [t[0], t[1], 1, 0, 0, 0, -s[0] * t[0], -s[0] * t[1]],
+                [0, 0, 0, t[0], t[1], 1, -s[1] * t[0], -s[1] * t[1]],
+            ]
+        )
+
+    A = np.array(matrix, dtype=np.float32)
+    B = np.array(source_coords, dtype=np.float32).reshape(8)
+
+    res = np.linalg.solve(A, B)
+    return np.array(res).reshape(8)
+
+
+def perspective_transform(image, coeffs):
+    width, height = image.size
+    return image.transform(
+        (width, height), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC
+    )

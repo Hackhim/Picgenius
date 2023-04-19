@@ -21,8 +21,10 @@ from .watermark import Watermark
 class TemplateElement:
     """Template element data."""
 
-    position: tuple[int, int]
-    size: tuple[int, int]
+    position: tuple[int, int] | tuple[
+        tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
+    ]
+    size: Optional[tuple[int, int]] = None
 
 
 @dataclass
