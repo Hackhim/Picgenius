@@ -1,7 +1,7 @@
 """Module to define image processing functions."""
 from typing import Optional
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
 
 
 def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
@@ -112,3 +112,51 @@ def perspective_transform(image, coeffs):
     return image.transform(
         (width, height), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC
     )
+
+
+def apply_filter(image: Image.Image, filter_name: str) -> Image.Image:
+    """Apply a basic filter."""
+    filter_map = {
+        "BLUR": ImageFilter.BLUR,
+        "CONTOUR": ImageFilter.CONTOUR,
+        "DETAIL": ImageFilter.DETAIL,
+        "EDGE_ENHANCE": ImageFilter.EDGE_ENHANCE,
+        "EMBOSS": ImageFilter.EMBOSS,
+        "SHARPEN": ImageFilter.SHARPEN,
+        "SMOOTH": ImageFilter.SMOOTH,
+        "SMOOTH_MORE": ImageFilter.SMOOTH_MORE,
+    }
+
+    if filter_name in filter_map:
+        filter_obj = filter_map[filter_name]
+        return image.filter(filter_obj)
+    else:
+        raise ValueError(f"Unknown filter: {filter_name}")
+
+
+def smooth_integration(transformed_image, corner_points, cut_pixels=3, smooth_power=1):
+    """Add smooth transition."""
+    # Duplicate the transformed image
+    background_image = transformed_image.copy()
+    foreground_image = transformed_image.copy()
+
+    # Apply Gaussian blur to the background image
+    for _ in range(smooth_power):
+        background_image = apply_filter(background_image, "SMOOTH_MORE")
+
+    # Calculate the new corner points for the mask
+    tl, tr, bl, br = corner_points
+    new_tl = (tl[0] + cut_pixels, tl[1] + cut_pixels)
+    new_tr = (tr[0] - cut_pixels, tr[1] + cut_pixels)
+    new_bl = (bl[0] + cut_pixels, bl[1] - cut_pixels)
+    new_br = (br[0] - cut_pixels, br[1] - cut_pixels)
+    new_corner_points = [new_tl, new_tr, new_br, new_bl]
+
+    # Create a mask with the new corner points
+    mask = Image.new("L", foreground_image.size, 0)
+    ImageDraw.Draw(mask).polygon(new_corner_points, outline=255, fill=255)
+
+    # Paste the foreground image onto the background image using the mask
+    result_image = Image.composite(foreground_image, background_image, mask)
+
+    return result_image

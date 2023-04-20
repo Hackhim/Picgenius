@@ -129,12 +129,21 @@ class TemplateRenderer:
         # resized_design = im.resize_and_crop(design, *template.size)
 
         # Calculate the transformation matrix
+        working_design = design.copy()
+
         tl, tr, bl, br = position
-        width, height = design.size
+        width, height = working_design.size
         input_points = [(0, 0), (width, 0), (0, height), (width, height)]
         output_points = [tl, tr, bl, br]
         coeffs = im.find_coeffs(input_points, output_points)
 
-        transformed_design = im.perspective_transform(design.convert("RGBA"), coeffs)
+        transformed_design = im.perspective_transform(
+            working_design.convert("RGBA"), coeffs
+        )
+
+        transformed_design = im.smooth_integration(
+            transformed_design, output_points, smooth_power=3
+        )
+
         template.paste(transformed_design, (0, 0), transformed_design)
         return template
