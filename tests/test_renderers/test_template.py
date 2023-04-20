@@ -12,10 +12,18 @@ class TestTemplateRenderer:
     design2: Design
     design3: Design
     design4: Design
+
+    plant1: Design
+    plant2: Design
+    plant3: Design
+
     template: Template
-    template_slant: Template
+    template_2: Template
+    template_3: Template
+
     output_path: str
-    output_path_slant: str
+    output_path_2: str
+    output_path_3: str
 
     def setup_method(self):
         """Setup test data."""
@@ -23,6 +31,11 @@ class TestTemplateRenderer:
         self.design2 = Design(path="./tests/workdir/designs/paint-smoke.png")
         self.design3 = Design(path="./tests/workdir/designs/flowers-1.png")
         self.design4 = Design(path="./tests/workdir/designs/flowers-2.png")
+
+        self.plant1 = Design(path="./tests/workdir/designs/plants/plant-1.png")
+        self.plant2 = Design(path="./tests/workdir/designs/plants/plant-2.png")
+        self.plant3 = Design(path="./tests/workdir/designs/plants/plant-3.png")
+
         self.template = Template(
             path="./tests/workdir/templates/3-table.png",
             elements=[
@@ -32,7 +45,7 @@ class TestTemplateRenderer:
             watermark=None,
         )
 
-        self.template_slant = Template(
+        self.template_2 = Template(
             path="./tests/workdir/templates/template-biais-1.png",
             elements=[
                 TemplateElement(
@@ -53,8 +66,40 @@ class TestTemplateRenderer:
                 ),
             ],
         )
-        self.output_path = "./tests/workdir/output/test-template-render.png"
-        self.output_path_slant = "./tests/workdir/output/test-template-render-slant.png"
+
+        self.template_3 = Template(
+            path="./tests/workdir/templates/template-biais-3.png",
+            elements=[
+                TemplateElement(
+                    position=(
+                        (502, 358),
+                        (1158, 416),
+                        (502, 1455),
+                        (1158, 1457),
+                    ),
+                ),
+                TemplateElement(
+                    position=(
+                        (1259, 426),
+                        (1840, 480),
+                        (1259, 1459),
+                        (1840, 1461),
+                    ),
+                ),
+                TemplateElement(
+                    position=(
+                        (1931, 489),
+                        (2449, 536),
+                        (1931, 1463),
+                        (2449, 1465),
+                    ),
+                ),
+            ],
+        )
+
+        self.output_path = "./tests/workdir/output/test-template-render-1.png"
+        self.output_path_2 = "./tests/workdir/output/test-template-render-2.png"
+        self.output_path_3 = "./tests/workdir/output/test-template-render-3.png"
 
     def test_generate_template(self):
         """Test generate_templates"""
@@ -68,8 +113,17 @@ class TestTemplateRenderer:
     def test_generate_slanted_template(self):
         """Test template generation for slanted canvas."""
         designs = [self.design3, self.design4]
-        result = TemplateRenderer.generate_template(self.template_slant, designs)
+        result = TemplateRenderer.generate_template(self.template_2, designs)
 
         assert isinstance(result, Image.Image)
-        result.save(self.output_path_slant)
-        assert Path(self.output_path_slant).is_file()
+        result.save(self.output_path_2)
+        assert Path(self.output_path_2).is_file()
+
+    def test_generate_template_3(self):
+        """Test template generation for slanted canvas."""
+        designs = [self.plant1, self.plant2, self.plant3]
+        result = TemplateRenderer.generate_template(self.template_3, designs)
+
+        assert isinstance(result, Image.Image)
+        result.save(self.output_path_3)
+        assert Path(self.output_path_3).is_file()

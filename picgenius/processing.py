@@ -160,3 +160,34 @@ def smooth_integration(transformed_image, corner_points, cut_pixels=3, smooth_po
     result_image = Image.composite(foreground_image, background_image, mask)
 
     return result_image
+
+
+def proportional_overlap_resize(
+    image_to_resize: Image.Image, reference_image: Image.Image
+) -> Image.Image:
+    """
+    Resize an image proportionally to match the width of another image.
+
+    Args:
+        image_to_resize (Image.Image): The image to be resized.
+        reference_image (Image.Image): The reference image whose width the image_to_resize will match.
+
+    Returns:
+        Image.Image: The resized image.
+    """
+
+    # Get the dimensions of the images
+    ref_width, _ = reference_image.size
+    img_width, img_height = image_to_resize.size
+
+    # Calculate the aspect ratio of the image_to_resize
+    aspect_ratio = float(img_width) / float(img_height)
+
+    # Calculate the new dimensions for the resized image
+    new_width = ref_width
+    new_height = int(ref_width / aspect_ratio)
+
+    # Resize the image
+    resized_image = image_to_resize.resize((new_width, new_height), Image.ANTIALIAS)
+
+    return resized_image

@@ -2,6 +2,7 @@
 from typing import Generator
 from PIL import Image
 
+
 from picgenius import processing as im
 from picgenius.models import Template, Design
 from picgenius.renderers import WatermarkRenderer
@@ -126,10 +127,8 @@ class TemplateRenderer:
         Returns:
             Image.Image: The template image with the design pasted.
         """
-        # resized_design = im.resize_and_crop(design, *template.size)
-
-        # Calculate the transformation matrix
         working_design = design.copy()
+        working_design = im.proportional_overlap_resize(working_design, template)
 
         tl, tr, bl, br = position
         width, height = working_design.size
