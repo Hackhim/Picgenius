@@ -54,7 +54,7 @@ def paste_text_on_image(
 
     draw.text(pos, text, font=font, fill=color)
 
-    combined = Image.alpha_composite(image, mask)
+    combined = Image.alpha_composite(image.convert("RGBA"), mask)
     return combined
 
 

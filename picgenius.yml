@@ -96,6 +96,31 @@ product_types:
       frames: 100
       fps: 24
 
+  3-designs:
+    designs-count: 3
+    formats:
+      - ppi: 300
+        inches: [8, 10]
+    templates:
+      - template_path: ./workdir/templates-3-designs/saloon.png
+        watermark: default
+        elements:
+          - position:
+              - [502, 358]
+              - [1158, 416]
+              - [502, 1455]
+              - [1158, 1457]
+          - position:
+              - [1259, 426]
+              - [1840, 480]
+              - [1259, 1459]
+              - [1840, 1461]
+          - position:
+              - [1931, 489]
+              - [2449, 536]
+              - [1931, 1463]
+              - [2449, 1465]
+
   4-designs:
     designs-count: 4
     templates:
