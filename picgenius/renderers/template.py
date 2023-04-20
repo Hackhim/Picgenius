@@ -4,7 +4,7 @@ from PIL import Image
 
 
 from picgenius import processing as im
-from picgenius.models import Template, Design
+from picgenius.models import Template, TemplateElement, Design
 from picgenius.renderers import WatermarkRenderer
 
 
@@ -62,6 +62,7 @@ class TemplateRenderer:
             size = element.size
 
             design_image = Image.open(design.path)
+            design_image = TemplateRenderer._try_apply_overlay(design_image, element)
             if len(position) == 2 and size is not None:
                 TemplateRenderer._fit_design_in_template(
                     template_image, design_image, position, size
@@ -81,6 +82,12 @@ class TemplateRenderer:
             )
 
         return template_image
+
+    @staticmethod
+    def _try_apply_overlay(image: Image.Image, element: TemplateElement) -> Image.Image:
+        if element.overlay is not None:
+            return im.apply_transparent_overlay(image, element.overlay)
+        return image
 
     @staticmethod
     def _fit_design_in_template(

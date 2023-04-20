@@ -1,7 +1,7 @@
 """Module to define image processing functions."""
 from typing import Optional
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
 def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
@@ -191,3 +191,30 @@ def proportional_overlap_resize(
     resized_image = image_to_resize.resize((new_width, new_height), Image.ANTIALIAS)
 
     return resized_image
+
+
+def apply_transparent_overlay(
+    image: Image.Image, overlay_color: tuple[int, int, int, int]
+) -> Image.Image:
+    """
+    Apply a transparent overlay on an image.
+
+    Args:
+        image (Image.Image): The target image to apply the overlay.
+        overlay_color (tuple[int, int, int, int]): The RGBA color of the overlay (R, G, B, A).
+
+    Returns:
+        Image.Image: The image with the transparent overlay applied.
+    """
+
+    # Create a new image with the same size as the target image and the specified overlay color
+    overlay = Image.new("RGBA", image.size, overlay_color)
+
+    # If the input image is not in RGBA mode, convert it
+    if image.mode != "RGBA":
+        image = image.convert("RGBA")
+
+    # Paste the overlay onto the target image using the alpha channel of the overlay as a mask
+    image_with_overlay = Image.alpha_composite(image, overlay)
+
+    return image_with_overlay

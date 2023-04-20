@@ -25,6 +25,11 @@ class TemplateElement:
         tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
     ]
     size: Optional[tuple[int, int]] = None
+    overlay: Optional[tuple[int, int, int, int]] = None
+
+    def __post_init__(self):
+        if self.overlay is not None:
+            self.overlay = tuple(self.overlay)
 
 
 @dataclass
