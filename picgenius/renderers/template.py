@@ -1,8 +1,6 @@
 """Module for TemplateRenderer class declaration."""
 from typing import Generator
 from PIL import Image
-import numpy as np
-import cv2
 
 from picgenius import processing as im
 from picgenius.models import Template, Design
@@ -121,9 +119,9 @@ class TemplateRenderer:
         Args:
             template (Image.Image): The template image to paste the design onto.
             design (Image.Image): The design image to be pasted.
-            position (Tuple[int, int, int, int, int, int, int, int]): The coordinates of the four corners
+            position (tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]])
+                The coordinates of the four corners
             of the design's position in the template.
-            size (Tuple[int, int]): The desired width and height for the design image.
 
         Returns:
             Image.Image: The template image with the design pasted.
@@ -135,39 +133,8 @@ class TemplateRenderer:
         width, height = design.size
         input_points = [(0, 0), (width, 0), (0, height), (width, height)]
         output_points = [tl, tr, bl, br]
-        coeffs = find_coeffs(input_points, output_points)
+        coeffs = im.find_coeffs(input_points, output_points)
 
-        # Apply the transformation to the design
-        transformed_design = perspective_transform(design, coeffs)
-
-        # Extract and transform the alpha channel
-        alpha_channel = design.split()[-1]
-        transformed_alpha = perspective_transform(alpha_channel, coeffs)
-
-        # Paste the transformed design onto the template using the transformed alpha channel as a mask
-        template.paste(transformed_design.convert("RGBA"), (0, 0), transformed_alpha)
+        transformed_design = im.perspective_transform(design.convert("RGBA"), coeffs)
+        template.paste(transformed_design, (0, 0), transformed_design)
         return template
-
-
-def find_coeffs(source_coords, target_coords):
-    matrix = []
-    for s, t in zip(source_coords, target_coords):
-        matrix.extend(
-            [
-                [t[0], t[1], 1, 0, 0, 0, -s[0] * t[0], -s[0] * t[1]],
-                [0, 0, 0, t[0], t[1], 1, -s[1] * t[0], -s[1] * t[1]],
-            ]
-        )
-
-    A = np.array(matrix, dtype=np.float32)
-    B = np.array(source_coords, dtype=np.float32).reshape(8)
-
-    res = np.linalg.solve(A, B)
-    return np.array(res).reshape(8)
-
-
-def perspective_transform(image, coeffs):
-    width, height = image.size
-    return image.transform(
-        (width, height), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC
-    )

@@ -1,5 +1,6 @@
 """Module to define image processing functions."""
 from typing import Optional
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -85,3 +86,29 @@ def find_font_size(text: str, font_path: str, max_width):
 def get_text_size(font: ImageFont.FreeTypeFont, text: str) -> tuple[int, int]:
     """Returns the x, y size of a given font and text."""
     return font.getbbox(text)[-2:]
+
+
+def find_coeffs(source_coords, target_coords):
+    """Find transform coeffs."""
+    matrix = []
+    for s, t in zip(source_coords, target_coords):
+        matrix.extend(
+            [
+                [t[0], t[1], 1, 0, 0, 0, -s[0] * t[0], -s[0] * t[1]],
+                [0, 0, 0, t[0], t[1], 1, -s[1] * t[0], -s[1] * t[1]],
+            ]
+        )
+
+    A = np.array(matrix, dtype=np.float32)
+    B = np.array(source_coords, dtype=np.float32).reshape(8)
+
+    res = np.linalg.solve(A, B)
+    return np.array(res).reshape(8)
+
+
+def perspective_transform(image, coeffs):
+    """Apply the coeffs transform."""
+    width, height = image.size
+    return image.transform(
+        (width, height), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC
+    )
