@@ -1,0 +1,123 @@
+product_types:
+  3-designs:
+    designs-count: 3
+    formats:
+      - ppi: 300
+        inches: [8, 10]
+    templates:
+      - template_path: ./workdir/templates-3-designs/i00495.jpg
+        elements:
+          - position:
+              - [502, 358]
+              - [1158, 416]
+              - [502, 1455]
+              - [1158, 1457]
+          - position:
+              - [1259, 426]
+              - [1840, 480]
+              - [1259, 1459]
+              - [1840, 1461]
+          - position:
+              - [1931, 489]
+              - [2449, 536]
+              - [1931, 1463]
+              - [2449, 1465]
+
+      - template_path: ./workdir/templates-3-designs/_i00084_wm.jpg
+        elements:
+          - position:
+              - [356, 406]
+              - [1435, 432]
+              - [356, 1929]
+              - [1435, 1907]
+          - position:
+              - [1568, 436]
+              - [2572, 461]
+              - [1568, 1905]
+              - [2572, 1886]
+          - position:
+              - [2698, 464]
+              - [3634, 488]
+              - [2698, 1883]
+              - [3634, 1865]
+
+      - template_path: ./workdir/templates-3-designs/i00195_wm.jpg
+        elements:
+          - position: [340, 790]
+            size: [1034, 1416]
+          - position: [1484, 790]
+            size: [1034, 1416]
+          - position: [2629, 790]
+            size: [1033, 1416]
+
+      - template_path: ./workdir/templates-3-designs/i00200_wm.jpg
+        elements:
+          - position: [340, 790]
+            size: [1034, 1416]
+          - position: [1484, 790]
+            size: [1034, 1416]
+          - position: [2629, 790]
+            size: [1033, 1416]
+
+      - template_path: ./workdir/templates-3-designs/i00496.png
+        elements:
+          - position: [879, 504]
+            size: [678, 960]
+          - position: [1656, 504]
+            size: [678, 960]
+          - position: [2432, 504]
+            size: [678, 960]
+
+      - template_path: ./workdir/templates-3-designs/i00701.jpg
+        elements:
+          - position:
+              - [492, 895]
+              - [1364, 895]
+              - [480, 2203]
+              - [1358, 2202]
+          - position:
+              - [1564, 895]
+              - [2437, 895]
+              - [1560, 2203]
+              - [2440, 2201]
+          - position:
+              - [2641, 895]
+              - [3512, 895]
+              - [2646, 2203]
+              - [3524, 2201]
+
+      - template_path: ./workdir/templates-3-designs/i00725.jpg
+        elements:
+          - position:
+              - [472, 885]
+              - [1355, 884]
+              - [451, 2212]
+              - [1347, 2211]
+          - position:
+              - [1559, 885]
+              - [2442, 885]
+              - [1552, 2212]
+              - [2447, 2211]
+          - position:
+              - [2650, 885]
+              - [3532, 885]
+              - [2657, 2212]
+              - [3548, 2211]
+
+      - template_path: ./workdir/templates-3-designs/i00726.jpg
+        elements:
+          - position:
+              - [472, 885]
+              - [1355, 884]
+              - [451, 2212]
+              - [1347, 2211]
+          - position:
+              - [1559, 885]
+              - [2442, 885]
+              - [1552, 2212]
+              - [2447, 2211]
+          - position:
+              - [2650, 885]
+              - [3532, 885]
+              - [2657, 2212]
+              - [3548, 2211]
