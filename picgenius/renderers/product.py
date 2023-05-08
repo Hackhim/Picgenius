@@ -82,6 +82,10 @@ class ProductRenderer:
                 output_dir, product, design_name
             )
 
+            print("-" * 32)
+            print(design.path)
+            print(output_dir)
+
             formatted_designs = ProductRenderer._generate_formats_for_design(
                 design,
                 formats,
@@ -110,7 +114,8 @@ class ProductRenderer:
             inches_x, inches_y = design_format.inches
             size_in_pixels = (inches_x * ppi, inches_y * ppi)
 
-            formatted_image = im.resize_and_crop(image, *size_in_pixels)
+            # formatted_image = im.resize_and_crop(image, *size_in_pixels)
+            formatted_image = im.upscale_image(image, 2)
             filename = f"{design.name}-{inches_x}-{inches_y}.png"
             yield (formatted_image, filename)
 

@@ -4,6 +4,58 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
+import torch
+from torchsr.datasets import Div2K
+from torchsr.models import edsr, rcan
+from torchsr.models.utils import ChoppedModel, SelfEnsembleModel
+from torchsr.transforms import ColorJitter, Compose, RandomCrop
+
+
+def upscale_image(image: Image.Image, scale: int) -> Image.Image:
+    # model = SelfEnsembleModel(edsr(scale=2, pretrained=True))
+
+    # Load the EDSR model
+    model = edsr(scale=scale)
+
+    # Load a pre-trained model
+    model.load_pretrained()
+
+    # Convert the PIL image to a PyTorch tensor
+    input_image = torch.tensor(
+        np.array(image).transpose([2, 0, 1]), dtype=torch.float32
+    )
+
+    # Normalize the input image
+    input_image /= 255.0
+
+    # Add an extra batch dimension
+    input_image = input_image.unsqueeze(0)
+
+    # Move input to GPU if available
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    input_image = input_image.to(device)
+    model = model.to(device)
+
+    # Perform the upscaling
+    with torch.no_grad():
+        upscaled_image = model(input_image)
+
+    # Move upscaled image back to CPU
+    upscaled_image = upscaled_image.cpu()
+
+    # Remove the batch dimension
+    upscaled_image = upscaled_image.squeeze(0)
+
+    # Denormalize and convert the tensor back to a PIL image
+    upscaled_image *= 255.0
+    upscaled_image = upscaled_image.clamp(0, 255)
+    upscaled_image = Image.fromarray(
+        upscaled_image.permute(1, 2, 0).numpy().astype(np.uint8), mode="RGB"
+    )
+
+    return upscaled_image
+
+
 def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
     """Resize and crop image."""
     target_ratio = size_x / size_y
