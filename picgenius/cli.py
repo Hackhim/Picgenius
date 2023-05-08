@@ -1,5 +1,6 @@
 """Entry point to use the picgenius cli tool."""
 from dataclasses import dataclass, field
+from typing import Optional
 
 import click
 
@@ -86,3 +87,22 @@ def all_medias(context_object: ContextObject):
 
     controller = Controller(product_type, design_path)
     controller.generate_all_assets(output_dir)
+
+
+@generate.command
+@click.option(
+    "--template",
+    "-t",
+    "template_name",
+    help="Optional template name.",
+)
+@click.pass_obj
+def templates(context_object: ContextObject, template_name: Optional[str]):
+    """Generate templates of product type."""
+
+    product_type = context_object.selected_product_type
+    design_path = context_object.design_path
+    output_dir = context_object.output_dir
+
+    controller = Controller(product_type, design_path)
+    controller.generate_templates(output_dir, template_name)

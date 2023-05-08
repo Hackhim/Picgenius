@@ -1,4 +1,5 @@
 """Module for Controller class declaration."""
+from typing import Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from picgenius.models import ProductType, Product
 from picgenius.renderers import ProductRenderer
@@ -61,3 +62,15 @@ class Controller:
             Product(product_type, product_path)
             for product_path in utils.find_product_paths(designs_count, design_path)
         ]
+
+    def upscale_designs(self, output_dir: str):
+        pass
+
+    def generate_templates(self, output_dir: str, template_name: Optional[str] = None):
+        """Generate templates."""
+        for product in self.products:
+            self.logger.info("Start templates generation for %s", product.name)
+            ProductRenderer.generate_templates(product, output_dir)
+
+    def generate_video(self, output_dir: str):
+        pass
