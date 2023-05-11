@@ -3,56 +3,22 @@ from typing import Optional
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-
 import torch
-from torchsr.datasets import Div2K
-from torchsr.models import edsr, rcan
-from torchsr.models.utils import ChoppedModel, SelfEnsembleModel
-from torchsr.transforms import ColorJitter, Compose, RandomCrop
+from RealESRGAN import RealESRGAN
 
 
 def upscale_image(image: Image.Image, scale: int) -> Image.Image:
-    # model = SelfEnsembleModel(edsr(scale=2, pretrained=True))
+    """Upscale the given image using ESRGAN model."""
+    try:
+        assert scale in [2, 4, 8]
+    except AssertionError as exc:
+        raise ValueError("scale must be 2, 4 or 8") from exc
 
-    # Load the EDSR model
-    model = edsr(scale=scale)
+    device = torch.device("cuda")
+    model = RealESRGAN(device, scale=scale)
+    model.load_weights(f"./models/RealESRGAN_x{scale}.pth", download=True)
 
-    # Load a pre-trained model
-    model.load_pretrained()
-
-    # Convert the PIL image to a PyTorch tensor
-    input_image = torch.tensor(
-        np.array(image).transpose([2, 0, 1]), dtype=torch.float32
-    )
-
-    # Normalize the input image
-    input_image /= 255.0
-
-    # Add an extra batch dimension
-    input_image = input_image.unsqueeze(0)
-
-    # Move input to GPU if available
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    input_image = input_image.to(device)
-    model = model.to(device)
-
-    # Perform the upscaling
-    with torch.no_grad():
-        upscaled_image = model(input_image)
-
-    # Move upscaled image back to CPU
-    upscaled_image = upscaled_image.cpu()
-
-    # Remove the batch dimension
-    upscaled_image = upscaled_image.squeeze(0)
-
-    # Denormalize and convert the tensor back to a PIL image
-    upscaled_image *= 255.0
-    upscaled_image = upscaled_image.clamp(0, 255)
-    upscaled_image = Image.fromarray(
-        upscaled_image.permute(1, 2, 0).numpy().astype(np.uint8), mode="RGB"
-    )
-
+    upscaled_image = model.predict(image)
     return upscaled_image
 
 
