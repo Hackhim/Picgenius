@@ -1,7 +1,7 @@
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
-    "pytest>=7.3.0",
+    "pytest>=7.3.1",
 ]
 
 [project]
@@ -17,6 +17,7 @@ dependencies = [
     "setuptools>=67.5.0",
     "click>=8.1.3",
     "PyYAML>=6.0",
+    "RealESRGAN @ git+https://github.com/sberbank-ai/Real-ESRGAN.git",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
