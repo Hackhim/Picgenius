@@ -117,8 +117,8 @@ class TestProductRenderer:
         ProductRenderer.generate_formatted_designs(product, self.OUTPUT_DIR)
 
         # Assert that the output files were created
-        # assert os.path.exists(
-        #    os.path.join(
-        #        self.OUTPUT_DIR, product.name, ProductRenderer.FORMATTED_DESIGNS_FOLDER
-        #    )
-        # )
+        assert os.path.exists(
+            os.path.join(
+                self.OUTPUT_DIR, product.name, ProductRenderer.FORMATTED_DESIGNS_FOLDER
+            )
+        )
