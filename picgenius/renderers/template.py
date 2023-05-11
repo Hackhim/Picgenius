@@ -148,7 +148,7 @@ class TemplateRenderer:
         )
 
         transformed_design = im.smooth_integration(
-            transformed_design, output_points, smooth_power=3
+            transformed_design, output_points, smooth_power=2
         )
 
         template.paste(transformed_design, (0, 0), transformed_design)

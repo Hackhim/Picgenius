@@ -1,5 +1,5 @@
 """Entry point to use the picgenius cli tool."""
-from cli import picgenius
+from picgenius.cli import picgenius
 
 
 def main():
