@@ -1,14 +1,12 @@
 """Module for ProductRenderer class declaration."""
 import random
 import os
-from typing import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from PIL import Image
 
-from picgenius import processing as im
-from picgenius.models import Product, Design, Format
-from picgenius.renderers import TemplateRenderer, VideoRenderer
+from picgenius.models import Product
+from picgenius.renderers import TemplateRenderer, VideoRenderer, DesignRenderer
 
 
 class ProductRenderer:
@@ -22,10 +20,6 @@ class ProductRenderer:
     def generate_templates(product: Product, output_dir: str, max_threads: int = 10):
         """Generate product templates."""
 
-        def save_template(visual_template, template_name):
-            output_path = os.path.join(output_dir, f"{template_name}.png")
-            visual_template.save(output_path)
-
         output_dir = ProductRenderer.prepare_visuals_output_dir(output_dir, product)
 
         with ThreadPoolExecutor(max_workers=max_threads) as executor:
@@ -33,7 +27,12 @@ class ProductRenderer:
             for generated_visual, template in TemplateRenderer.generate_templates(
                 product.type.templates, product.designs
             ):
-                future = executor.submit(save_template, generated_visual, template.name)
+                future = executor.submit(
+                    ProductRenderer.save_image,
+                    generated_visual,
+                    output_dir,
+                    template.name,
+                )
                 futures.append(future)
 
             # Wait for all threads to complete
@@ -69,11 +68,6 @@ class ProductRenderer:
     ):
         """Generate formatted designs."""
 
-        def save_formatted_image(formatted_image, formatted_dir, filename):
-            output_path = os.path.join(formatted_dir, filename)
-            formatted_image.save(output_path)
-            formatted_image.close()
-
         for design in product.designs:
             formats = product.type.formats
             design_name = design.name if len(formats) > 1 else ""
@@ -82,20 +76,19 @@ class ProductRenderer:
                 output_dir, product, design_name
             )
 
-            print("-" * 32)
-            print(design.path)
-            print(output_dir)
-
-            formatted_designs = ProductRenderer._generate_formats_for_design(
+            design_formats = DesignRenderer.generate_design_formats(
                 design,
                 formats,
             )
 
             with ThreadPoolExecutor(max_workers=max_threads) as executor:
                 futures = []
-                for formatted_image, filename in formatted_designs:
+                for formatted_image, filename in design_formats:
                     future = executor.submit(
-                        save_formatted_image, formatted_image, formatted_dir, filename
+                        ProductRenderer.save_image,
+                        formatted_image,
+                        formatted_dir,
+                        f"{filename}.jpg",
                     )
                     futures.append(future)
 
@@ -104,19 +97,13 @@ class ProductRenderer:
                     future.result()
 
     @staticmethod
-    def _generate_formats_for_design(
-        design: Design, design_formats: list[Format]
-    ) -> Generator:
-        """Generate formatted design."""
-        image = Image.open(design.path)
-        for design_format in design_formats:
-            ppi = design_format.ppi
-            inches_x, inches_y = design_format.inches
-            size_in_pixels = (inches_x * ppi, inches_y * ppi)
-
-            formatted_image = im.resize_and_crop(image, *size_in_pixels)
-            filename = f"{design.name}-{inches_x}-{inches_y}.png"
-            yield (formatted_image, filename)
+    def save_image(
+        image: Image.Image, output_dir: str, filename: str, extension: str = "jpg"
+    ):
+        """Save image to output_dir."""
+        output_path = os.path.join(output_dir, f"{filename}.{extension}")
+        image.save(output_path)
+        image.close()
 
     @staticmethod
     def prepare_formatted_output_dir(base_dir: str, product: Product, design_name: str):
