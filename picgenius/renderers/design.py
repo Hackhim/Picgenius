@@ -26,15 +26,33 @@ class DesignRenderer:
             yield (formatted_image, filename)
 
     @staticmethod
-    def upscale_design(design: Design, scale: int) -> Generator:
+    def upscale_design(design: Design, scale: int, cpu: bool = False) -> Image.Image:
         """Generate upscaled design."""
-        assert scale in [2, 4, 8, 16]
+        assert scale in [2, 4, 8, 10, 12, 16]
 
         image = Image.open(design.path)
         if scale == 16:
-            upscaled_image = im.upscale_image(image, 2)
-            upscaled_image = im.upscale_image(upscaled_image, 8)
+            upscaled_image = im.upscale_image(image, 2, cpu=cpu)
+            upscaled_image = im.upscale_image(upscaled_image, 8, cpu=cpu)
+        elif scale == 12:
+            upscaled_image = im.upscale_image(image, 4, cpu=cpu)
+            width, height = upscaled_image.size
+            upscaled_image = upscaled_image.resize(
+                (width * 3 // 4, height * 3 // 4), Image.ANTIALIAS
+            )
+            upscaled_image = im.upscale_image(upscaled_image, 4, cpu=cpu)
+        elif scale == 10:
+            upscaled_image = im.upscale_image(image, 4, cpu=cpu)
+            width, height = upscaled_image.size
+            upscaled_image = upscaled_image.resize(
+                (width * 5 // 8, height * 5 // 8), Image.ANTIALIAS
+            )
+            upscaled_image = im.upscale_image(upscaled_image, 4, cpu=cpu)
         else:
-            upscaled_image = im.upscale_image(image, scale)
+            upscaled_image = im.upscale_image(image, scale, cpu=cpu)
 
-        yield upscaled_image
+        return upscaled_image
+
+    @staticmethod
+    def _try_upscale_image(image: Image.Image, scale: int):
+        pass

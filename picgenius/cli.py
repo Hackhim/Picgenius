@@ -127,20 +127,31 @@ def format_designs(context_object: ContextObject):
     controller.generate_products_formatted_designs(output_dir)
 
 
-# @click.command
-# @click.option(
-#    "--scale",
-#    "-s",
-#    "scale",
-#    type=int,
-#    default=2,
-# )
-# @click.pass_obj
-# def upscale(context_object: ContextObject, scale: int):
-#    """Upscale given design."""
-#    product_type = context_object.selected_product_type
-#    design_path = context_object.design_path
-#    output_dir = context_object.output_dir
-#
-#    controller = Controller(product_type, design_path)
-#    controller.generate_upscaled_designs(output_dir, scale)
+@picgenius.command
+@click.argument("design_path", type=str)
+@click.option(
+    "--output",
+    "-o",
+    "output_dir",
+    default="./upscaled",
+    help="Output directory. Default: ./upscaled",
+)
+@click.option(
+    "--scale",
+    "-s",
+    "scale",
+    type=int,
+    default=2,
+    help="Available scale multiplicators: 2, 4, 8, 10, 12 and 16. Default: 2",
+)
+@click.option(
+    "--cpu",
+    is_flag=True,
+    type=bool,
+    default=False,
+    help="Force usage of CPU.",
+)
+def upscale(design_path: str, output_dir: str, scale: int, cpu: bool):
+    """Upscale given design."""
+    controller = Controller(design_path)
+    controller.upscale_designs(output_dir, scale, cpu=cpu)

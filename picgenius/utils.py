@@ -6,17 +6,22 @@ from PIL import Image
 # os and file related functions
 
 
+def has_image_extension(path: str) -> bool:
+    """Returns True if the given path ends with an image extension."""
+    return path.endswith((".png", ".jpg", ".jpeg"))
+
+
 def load_images(path: str) -> list[tuple[Image.Image, str]]:
-    """Load all PNG images in a folder or return single image"""
+    """Load all images in a folder or return single image"""
     images = []
-    if os.path.isfile(path) and path.endswith(".png"):
+    if os.path.isfile(path) and has_image_extension(path):
         _, design_name = extract_filename(path)
         images.append(
             (Image.open(path), design_name),
         )
     elif os.path.isdir(path):
         for file_name in os.listdir(path):
-            if file_name.endswith(".png"):
+            if has_image_extension(file_name):
                 file_path = os.path.join(path, file_name)
                 _, design_name = extract_filename(file_path)
                 images.append(
@@ -40,31 +45,31 @@ def extract_filename(path: str) -> tuple[str, str]:
 def find_product_paths(designs_count: int, design_path: str) -> list[str]:
     """Find designs paths according to the given design count."""
     if designs_count == 1:
-        return find_png_file_paths(design_path)
+        return find_image_file_paths(design_path)
     else:
-        return find_directories_with_n_png_files(design_path, designs_count)
+        return find_directories_with_n_image_files(design_path, designs_count)
 
 
-def find_png_file_paths(design_path: str) -> list[str]:
-    """Returns a list of paths to png files."""
+def find_image_file_paths(design_path: str) -> list[str]:
+    """Returns a list of paths to image files."""
 
-    is_png_file = os.path.isfile(design_path) and design_path.endswith(".png")
-    if is_png_file:
+    is_image_file = os.path.isfile(design_path) and has_image_extension(design_path)
+    if is_image_file:
         return [design_path]
 
     return [
         os.path.join(design_path, filename)
         for filename in os.listdir(design_path)
-        if filename.endswith(".png")
+        if has_image_extension(filename)
     ]
 
 
-def find_directories_with_n_png_files(design_path: str, png_count: int):
-    """Find directories that contains n png files."""
+def find_directories_with_n_image_files(design_path: str, image_count: int):
+    """Find directories that contains n image files."""
     if not os.path.isdir(design_path):
         return []
 
-    if is_directory_with_n_png_files(design_path, png_count):
+    if is_directory_with_n_image_files(design_path, image_count):
         return [design_path]
 
     directories = [
@@ -75,13 +80,13 @@ def find_directories_with_n_png_files(design_path: str, png_count: int):
     return [
         directory
         for directory in directories
-        if is_directory_with_n_png_files(directory, png_count)
+        if is_directory_with_n_image_files(directory, image_count)
     ]
 
 
-def is_directory_with_n_png_files(path: str, count: int) -> bool:
-    """Returns if the given directory has x png files."""
+def is_directory_with_n_image_files(path: str, count: int) -> bool:
+    """Returns if the given directory has x image files."""
     return (
         os.path.isdir(path)
-        and len([f for f in os.listdir(path) if f.endswith(".png")]) == count
+        and len([f for f in os.listdir(path) if has_image_extension(f)]) == count
     )

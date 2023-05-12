@@ -1,4 +1,5 @@
 """Module to define image processing functions."""
+import os
 from typing import Optional
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -7,18 +8,25 @@ import torch
 from RealESRGAN import RealESRGAN
 
 
-def upscale_image(image: Image.Image, scale: int) -> Image.Image:
+def upscale_image(image: Image.Image, scale: int, cpu: bool = False) -> Image.Image:
     """Upscale the given image using ESRGAN model."""
     try:
         assert scale in [2, 4, 8]
     except AssertionError as exc:
         raise ValueError("scale must be 2, 4 or 8") from exc
 
-    device = torch.device("cuda")
+    torch.cuda.empty_cache()
+    if torch.cuda.is_available() and not cpu:
+        device = torch.device("cuda")
+        batch_size = 1
+    else:
+        device = torch.device("cpu")
+        batch_size = 32
     model = RealESRGAN(device, scale=scale)
+    os.makedirs("./models", exist_ok=True)
     model.load_weights(f"./models/RealESRGAN_x{scale}.pth", download=True)
 
-    upscaled_image = model.predict(image)
+    upscaled_image = model.predict(image, batch_size=batch_size)
     return upscaled_image
 
 

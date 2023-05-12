@@ -30,7 +30,7 @@ class Product:
         _, name = utils.extract_filename(self.design_path)
         self.name = name
         self.designs = []
-        for design_path in utils.find_png_file_paths(self.design_path):
+        for design_path in utils.find_image_file_paths(self.design_path):
             self.designs.append(Design(design_path))
 
         if len(self.designs) != self.type.designs_count:

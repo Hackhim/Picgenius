@@ -1,8 +1,10 @@
 """Module for Controller class declaration."""
+import os
 from typing import Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from picgenius.models import ProductType, Product
-from picgenius.renderers import ProductRenderer
+
+from picgenius.models import ProductType, Product, Design
+from picgenius.renderers import ProductRenderer, DesignRenderer
 from picgenius.logger import PicGeniusLogger
 from picgenius import utils
 
@@ -104,3 +106,20 @@ class Controller:
     #        self.logger.info(
     #            "[%s] x%s upscaled designs generation done", product.name, scale
     #        )
+
+    def upscale_designs(self, output_dir: str, scale: int, cpu: bool = False):
+        """Upscale designs found in design_path."""
+        designs = [
+            Design(design_path)
+            for design_path in utils.find_image_file_paths(self.design_path)
+        ]
+        os.makedirs(output_dir, exist_ok=True)
+        for design in designs:
+            upscaled_path = os.path.join(
+                output_dir, f"{design.name}-x{scale}-upscaled.jpg"
+            )
+            self.logger.info("[%s] Start x%d upscale", design.name, scale)
+            self.logger.info("[%s] output: %s", design.name, upscaled_path)
+            upscaled_design = DesignRenderer.upscale_design(design, scale, cpu=cpu)
+            upscaled_design.save(upscaled_path)
+            self.logger.info("[%s] x%s upscale done", design.name, scale)
