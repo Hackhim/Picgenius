@@ -15,10 +15,14 @@ class ContextObject:
     """Context object to pass between commands."""
 
     config: ConfigLoader
-    product_types: dict[str, ProductType]
+    product_types: dict[str, ProductType] = field(init=False)
     selected_product_type: ProductType = field(init=False)
     design_path: str = field(init=False)
     output_dir: str = field(init=False)
+
+    def load_product_types(self):
+        """Load product types from config file."""
+        self.product_types = self.config.load()
 
 
 @click.group
@@ -32,64 +36,53 @@ def picgenius(ctx, config_path: str, debug: bool):
         logger.setLevel("DEBUG")
 
     config_loader = ConfigLoader(config_path)
-    context_object = ContextObject(config_loader, config_loader.load())
+    context_object = ContextObject(config_loader)
     ctx.obj = context_object
 
 
 @picgenius.group
-@click.option(
-    "--product-type",
-    "-p",
-    "product_type_name",
-    type=str,
-    required=True,
-    help="Product type to use, product type must be defined in the config file.",
-)
-@click.option(
-    "--design",
-    "-d",
-    "design_path",
-    default="./workdir/designs",
-    help="Path to designs folder or design file. Default: ./workdir/designs",
-)
+@click.argument("product_type", type=str)
+@click.argument("design_path", type=str)
 @click.option(
     "--output",
     "-o",
     "output_dir",
-    default="./workdir/products",
-    help="Output directory. Default: ./workdir/products",
+    default="./products",
+    help="Output directory. Default: ./products",
 )
 @click.pass_obj
-def generate(
+def product(
     context_object: ContextObject,
-    product_type_name: str,
+    product_type: str,
     design_path: str,
     output_dir: str,
 ):
-    """Generate selected medias."""
-    product_type = context_object.product_types.get(product_type_name)
-    if product_type is None:
-        raise ValueError(f'Product type "{product_type_name}" doesn\'t exist.')
+    """Generate specified product visuals."""
+    context_object.load_product_types()
 
-    context_object.selected_product_type = product_type
+    selected_product_type = context_object.product_types.get(product_type)
+    if selected_product_type is None:
+        raise ValueError(f'Product type "{product_type}" doesn\'t exist.')
+
+    context_object.selected_product_type = selected_product_type
     context_object.design_path = design_path
     context_object.output_dir = output_dir
 
 
-@generate.command
+@product.command
 @click.pass_obj
-def all_medias(context_object: ContextObject):
+def generate_all(context_object: ContextObject):
     """Generate all medias of product type."""
 
     product_type = context_object.selected_product_type
     design_path = context_object.design_path
     output_dir = context_object.output_dir
 
-    controller = Controller(product_type, design_path)
-    controller.generate_all_assets(output_dir)
+    controller = Controller(design_path, product_type=product_type)
+    controller.generate_products_all_assets(output_dir)
 
 
-@generate.command
+@product.command
 @click.option(
     "--template",
     "-t",
@@ -97,12 +90,57 @@ def all_medias(context_object: ContextObject):
     help="Optional template name.",
 )
 @click.pass_obj
-def templates(context_object: ContextObject, template_name: Optional[str]):
+def generate_templates(context_object: ContextObject, template_name: Optional[str]):
     """Generate templates of product type."""
 
     product_type = context_object.selected_product_type
     design_path = context_object.design_path
     output_dir = context_object.output_dir
 
-    controller = Controller(product_type, design_path)
-    controller.generate_templates(output_dir, template_name)
+    controller = Controller(design_path, product_type=product_type)
+    controller.generate_products_templates(output_dir, template_name)
+
+
+@product.command
+@click.pass_obj
+def generate_video(context_object: ContextObject):
+    """Generate templates of product type."""
+
+    product_type = context_object.selected_product_type
+    design_path = context_object.design_path
+    output_dir = context_object.output_dir
+
+    controller = Controller(design_path, product_type=product_type)
+    controller.generate_products_video(output_dir)
+
+
+@product.command
+@click.pass_obj
+def format_designs(context_object: ContextObject):
+    """Generate templates of product type."""
+
+    product_type = context_object.selected_product_type
+    design_path = context_object.design_path
+    output_dir = context_object.output_dir
+
+    controller = Controller(design_path, product_type=product_type)
+    controller.generate_products_formatted_designs(output_dir)
+
+
+# @click.command
+# @click.option(
+#    "--scale",
+#    "-s",
+#    "scale",
+#    type=int,
+#    default=2,
+# )
+# @click.pass_obj
+# def upscale(context_object: ContextObject, scale: int):
+#    """Upscale given design."""
+#    product_type = context_object.selected_product_type
+#    design_path = context_object.design_path
+#    output_dir = context_object.output_dir
+#
+#    controller = Controller(product_type, design_path)
+#    controller.generate_upscaled_designs(output_dir, scale)

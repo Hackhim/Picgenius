@@ -6,7 +6,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image
 
 from picgenius.models import Product
-from picgenius.renderers import TemplateRenderer, VideoRenderer, DesignRenderer
+from .template import TemplateRenderer
+from .video import VideoRenderer
+from .design import DesignRenderer
 
 
 class ProductRenderer:
