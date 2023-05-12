@@ -6,3 +6,4 @@ from .watermark import WatermarkRenderer
 from .template import TemplateRenderer
 from .video import VideoRenderer
 from .product import ProductRenderer
+from .design import DesignRenderer
