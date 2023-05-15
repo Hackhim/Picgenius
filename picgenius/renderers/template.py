@@ -1,5 +1,5 @@
 """Module for TemplateRenderer class declaration."""
-from typing import Generator
+from typing import Generator, Optional
 from PIL import Image
 
 
@@ -69,7 +69,7 @@ class TemplateRenderer:
                 )
             elif len(position) == 4:
                 TemplateRenderer._fit_design_in_transformed_template(
-                    template_image, design_image, position
+                    template_image, design_image, position, element.ratio
                 )
             else:
                 raise ValueError(
@@ -120,6 +120,7 @@ class TemplateRenderer:
         position: tuple[
             tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
         ],
+        ratio: Optional[tuple[int, int]] = None,
     ) -> Image.Image:
         """
         Paste the specified design on the specified transformed template.
@@ -135,6 +136,8 @@ class TemplateRenderer:
             Image.Image: The template image with the design pasted.
         """
         working_design = design.copy()
+        if ratio is not None:
+            working_design = im.crop_to_ratio(working_design, ratio)
         working_design = im.proportional_overlap_resize(working_design, template)
 
         tl, tr, bl, br = position
