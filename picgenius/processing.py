@@ -52,6 +52,37 @@ def resize_and_crop(image: Image.Image, size_x: int, size_y: int):
     return resized_design
 
 
+def crop_to_ratio(image: Image.Image, ratio: tuple[int, int]) -> Image.Image:
+    """
+    Crop an image to a specific ratio.
+
+    Args:
+        image (Image.Image): The input image.
+        ratio (tuple[int, int]): The desired ratio as (width, height).
+
+    Returns:
+        Image.Image: The cropped image.
+    """
+    width, height = image.size
+    target_ratio = ratio[0] / ratio[1]
+    image_ratio = width / height
+    left, top, right, bottom = 0, 0, width, height
+
+    # Determine whether we need to adjust width or height to match the target ratio
+    if image_ratio > target_ratio:
+        new_width = int(height * target_ratio)
+        left = (width - new_width) // 2
+        right = left + new_width
+    else:
+        new_height = int(width / target_ratio)
+        top = (height - new_height) // 2
+        bottom = top + new_height
+
+    # Crop the image based on the calculated dimensions
+    cropped_image = image.crop((left, top, right, bottom))
+    return cropped_image
+
+
 def paste_text_on_image(
     image: Image.Image,
     text: str,
