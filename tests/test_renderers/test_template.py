@@ -85,6 +85,7 @@ class TestTemplateRenderer:
                         (1259, 1459),
                         (1840, 1461),
                     ),
+                    ratio=(1, 1),
                 ),
                 TemplateElement(
                     position=(
@@ -93,6 +94,7 @@ class TestTemplateRenderer:
                         (1931, 1463),
                         (2449, 1465),
                     ),
+                    ratio=(3, 4),
                 ),
             ],
         )
