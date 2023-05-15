@@ -275,3 +275,50 @@ def apply_transparent_overlay(
     image_with_overlay = Image.alpha_composite(image, overlay)
 
     return image_with_overlay
+
+
+def zoom(
+    image: Image.Image,
+    zoom_factor: float,
+    zoom_center: Optional[tuple[int, int]] = None,
+) -> Image.Image:
+    """
+    Zoom into an image by a specific factor.
+
+    Args:
+        image (Image.Image): The input image.
+        zoom_factor (float): The zoom factor, must be > 1.0. For example,
+        2.0 will zoom into the middle 50% of the image.
+        zoom_center (tuple): The center point for the zoom (x, y).
+        If not provided, the center of the image is used.
+
+    Returns:
+        Image.Image: The zoomed image.
+    """
+    assert zoom_factor > 1.0, "Zoom factor should be greater than 1.0."
+
+    width, height = image.size
+    new_width, new_height = width / zoom_factor, height / zoom_factor
+
+    if zoom_center:
+        x, y = zoom_center
+        assert (
+            0 <= x <= width and 0 <= y <= height
+        ), "Zoom center coordinates must be within the image boundaries."
+    else:
+        x, y = width / 2, height / 2
+
+    left = int(x - new_width / 2)
+    top = int(y - new_height / 2)
+    right = int(x + new_width / 2)
+    bottom = int(y + new_height / 2)
+
+    # Adjust the box coordinates to be within the image boundaries
+    left = max(0, left)
+    top = max(0, top)
+    right = min(right, width)
+    bottom = min(bottom, height)
+
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image.resize((width, height), Image.LANCZOS)

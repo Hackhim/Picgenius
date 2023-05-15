@@ -26,6 +26,8 @@ class TemplateElement:
     ]
     size: Optional[tuple[int, int]] = None
     ratio: Optional[tuple[int, int]] = None
+    zoom: Optional[float] = None
+    zoom_position: Optional[tuple[int, int]] = None
     overlay: Optional[tuple[int, int, int, int]] = None
 
     def __post_init__(self):
@@ -40,10 +42,20 @@ class Template:
     """Template data."""
 
     elements: list[TemplateElement]
-    path: str
     name: str = ""
+    size: tuple[int, int] = (2000, 2000)
+    background_color: tuple[int, int, int] = (0, 0, 0)
+    path: Optional[str] = None
+    filename: Optional[str] = None
     watermark: Optional[Watermark] = None
 
     def __post_init__(self):
-        _, name = utils.extract_filename(self.path)
-        self.name = name
+        if self.filename is not None:
+            _, name = utils.extract_filename(self.filename)
+            self.name = name
+        elif self.path is not None:
+            filename, name = utils.extract_filename(self.path)
+            self.name = name
+            self.filename = filename
+        else:
+            raise ValueError("Either filename or path must be defined.")

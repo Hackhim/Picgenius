@@ -55,14 +55,19 @@ class TemplateRenderer:
         Returns:
             Image.Image: The generated image with designs fitted into the template.
         """
-        template_image = Image.open(template.path)
+
+        if template.path is not None:
+            template_image = Image.open(template.path)
+        else:
+            template_image = Image.new("RGBA", template.size, template.background_color)
 
         for design, element in zip(designs, template.elements):
             position = element.position
             size = element.size
 
             design_image = Image.open(design.path)
-            design_image = TemplateRenderer._try_apply_overlay(design_image, element)
+            design_image = TemplateRenderer._apply_zoom(design_image, element)
+            design_image = TemplateRenderer._apply_overlay(design_image, element)
             if len(position) == 2 and size is not None:
                 TemplateRenderer._fit_design_in_template(
                     template_image, design_image, position, size
@@ -84,7 +89,13 @@ class TemplateRenderer:
         return template_image
 
     @staticmethod
-    def _try_apply_overlay(image: Image.Image, element: TemplateElement) -> Image.Image:
+    def _apply_zoom(image: Image.Image, element: TemplateElement) -> Image.Image:
+        if element.zoom is not None:
+            return im.zoom(image, element.zoom, zoom_center=element.zoom_position)
+        return image
+
+    @staticmethod
+    def _apply_overlay(image: Image.Image, element: TemplateElement) -> Image.Image:
         if element.overlay is not None:
             return im.apply_transparent_overlay(image, element.overlay)
         return image

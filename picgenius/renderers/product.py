@@ -33,7 +33,7 @@ class ProductRenderer:
                     ProductRenderer.save_image,
                     generated_visual,
                     output_dir,
-                    template.name,
+                    template.filename,
                 )
                 futures.append(future)
 
@@ -99,11 +99,9 @@ class ProductRenderer:
                     future.result()
 
     @staticmethod
-    def save_image(
-        image: Image.Image, output_dir: str, filename: str, extension: str = "jpg"
-    ):
+    def save_image(image: Image.Image, output_dir: str, filename: str):
         """Save image to output_dir."""
-        output_path = os.path.join(output_dir, f"{filename}.{extension}")
+        output_path = os.path.join(output_dir, filename)
         image.save(output_path)
         image.close()
 

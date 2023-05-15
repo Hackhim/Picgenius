@@ -20,6 +20,7 @@ class TestTemplateRenderer:
     template: Template
     template_2: Template
     template_3: Template
+    not_path_template: Template
 
     output_path: str
     output_path_2: str
@@ -99,6 +100,15 @@ class TestTemplateRenderer:
             ],
         )
 
+        self.not_path_template = Template(
+            filename="no_path_template.jpg",
+            elements=[
+                TemplateElement(position=(428, 186), size=(480, 685)),
+                TemplateElement(position=(998, 186), size=(480, 685)),
+            ],
+            background_color=(255, 255, 255),
+        )
+
         self.output_path = "./tests/workdir/output/test-template-render-1.png"
         self.output_path_2 = "./tests/workdir/output/test-template-render-2.png"
         self.output_path_3 = "./tests/workdir/output/test-template-render-3.png"
@@ -129,3 +139,27 @@ class TestTemplateRenderer:
         assert isinstance(result, Image.Image)
         result.save(self.output_path_3)
         assert Path(self.output_path_3).is_file()
+
+    def test_generate_no_path_template(self):
+        """Test template generation for slanted canvas."""
+
+        designs = [
+            Design(path="./tests/workdir/designs/flowers-1.png"),
+            # Design(path="./tests/workdir/designs/flowers-2.png"),
+        ]
+        not_path_template = Template(
+            filename="no_path_template.jpg",
+            elements=[
+                TemplateElement(position=(0, 0), size=(2000, 2000), zoom=3),
+                TemplateElement(position=(998, 186), size=(480, 685)),
+            ],
+            background_color=(240, 240, 240),
+        )
+        output_path = f"tests/workdir/output/{not_path_template.filename}"
+
+        result = TemplateRenderer.generate_template(not_path_template, designs)
+        result = result.convert("RGB")
+
+        assert isinstance(result, Image.Image)
+        result.save(output_path)
+        assert Path(output_path).is_file()
