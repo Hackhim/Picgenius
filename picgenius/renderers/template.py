@@ -126,7 +126,7 @@ class TemplateRenderer:
             Image.Image: The template image with the design pasted.
         """
         resized_design = im.resize_and_crop(design, *size)
-        template.paste(resized_design, position)
+        template.paste(resized_design, position[:])
         return template
 
     @staticmethod
@@ -192,7 +192,7 @@ class TemplateRenderer:
         image_position = TemplateRenderer._calculate_image_element_position(
             image_element, image.size, template_image.size
         )
-        return template_image.paste(image, image_position, image)
+        return template_image.paste(image, image_position[:], image)
 
     @staticmethod
     def _calculate_image_element_size(
