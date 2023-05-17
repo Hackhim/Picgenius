@@ -88,9 +88,9 @@ class TemplateRenderer:
                 template_image, image_element
             )
 
-        if template.watermark is not None:
+        for watermark in template.watermarks:
             template_image = WatermarkRenderer.apply_watermarking(
-                template_image, template.watermark
+                template_image, watermark
             )
 
         return template_image

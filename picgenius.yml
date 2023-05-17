@@ -58,37 +58,44 @@ product_types:
         elements:
           - position: [705, 255]
             size: [658, 867]
-        watermark: default
+        watermarks:
+          - default
       - template_path: ./workdir/templates-1-design/2-cabinet.png
         elements:
           - position: [825, 176]
             size: [868, 1247]
-        watermark: center-textbox
+        watermarks:
+          - center-textbox
       - template_path: ./workdir/templates-1-design/3-desktop.png
         elements:
           - position: [462, 268]
             size: [727, 1029]
-        watermark: center-textbox
+        watermarks:
+          - center-textbox
       - template_path: ./workdir/templates-1-design/4-mac.png
         elements:
           - position: [1016, 114]
             size: [751, 1086]
-        watermark: default
+        watermarks:
+          - default
       - template_path: ./workdir/templates-1-design/5-wood-border.png
         elements:
           - position: [643, 293]
             size: [949, 1276]
-        watermark: default
+        watermarks:
+          - default
       - template_path: ./workdir/templates-1-design/6-grey-border.png
         elements:
           - position: [439, 252]
             size: [1116, 1493]
-        watermark: small-bottom-right
+        watermarks:
+          - small-bottom-right
       - template_path: ./workdir/templates-1-design/7-black-border.png
         elements:
           - position: [422, 256]
             size: [1154, 1494]
-        watermark: small-bottom-right
+        watermarks:
+          - small-bottom-right
     video:
       movement: zoom_in
       start_zoom: 10%
@@ -232,7 +239,8 @@ product_types:
             size: [490, 732]
           - position: [1076, 1055]
             size: [490, 732]
-        watermark: default
+        watermarks:
+          - default
       - template_path: ./workdir/templates-4-designs/2-cactus.png
         elements:
           - position: [526, 309]

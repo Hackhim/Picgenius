@@ -19,9 +19,11 @@ class VideoRenderer:
     ) -> ImageSequenceClip:
         """Generate a video according to the given video settings."""
         base_image = im.resize_and_crop(image, *video_settings.format)
-        base_image = VideoRenderer._apply_watermark(
-            base_image.convert("RGBA"), video_settings.watermark
-        )
+
+        for watermark in video_settings.watermarks:
+            base_image = VideoRenderer._apply_watermark(
+                base_image.convert("RGBA"), watermark
+            )
 
         frames = VideoRenderer.generate_video_frames(
             base_image, video_settings.frames, video_settings.step

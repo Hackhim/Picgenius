@@ -118,10 +118,12 @@ class ConfigLoader:
         self, video_settings_data: dict, watermarks: dict[str, Watermark]
     ) -> VideoSettings:
         kwargs = {**video_settings_data}
-        watermark_data = video_settings_data.get("watermark")
-        if watermark_data is not None:
-            watermark = self._try_get_watermark(watermark_data, watermarks)
-            kwargs["watermark"] = watermark
+        watermarks_data = video_settings_data.get("watermarks", [])
+        video_watermarks = [
+            self._try_get_watermark(watermark_data, watermarks)
+            for watermark_data in watermarks_data
+        ]
+        kwargs["watermarks"] = video_watermarks
         return VideoSettings(**kwargs)
 
     def _create_templates_from_product_type(
@@ -147,10 +149,12 @@ class ConfigLoader:
         images = [TemplateImageElement(**image_data) for image_data in images_data]
         kwargs["images"] = images
 
-        watermark_data = template_data.get("watermark")
-        if watermark_data is not None:
-            watermark = self._try_get_watermark(watermark_data, watermarks)
-            kwargs["watermark"] = watermark
+        watermarks_data = template_data.get("watermarks", [])
+        template_watermarks = [
+            self._try_get_watermark(watermark_data, watermarks)
+            for watermark_data in watermarks_data
+        ]
+        kwargs["watermarks"] = template_watermarks
 
         return Template(**kwargs)
 

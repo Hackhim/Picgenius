@@ -39,14 +39,16 @@ class TestProductRenderer:
                             TemplateElement(position=(428, 186), size=(480, 685)),
                             TemplateElement(position=(998, 186), size=(480, 685)),
                         ],
-                        watermark=Watermark(
-                            text="PicGenius",
-                            font_path="./workdir/CS_Gordon/CS Gordon Vintage.otf",
-                            color=(0, 0, 0, 255),
-                            textbox=Textbox(
-                                (50, 75, 50, 50), color=(255, 255, 255, 127)
+                        watermarks=[
+                            Watermark(
+                                text="PicGenius",
+                                font_path="./workdir/CS_Gordon/CS Gordon Vintage.otf",
+                                color=(0, 0, 0, 255),
+                                textbox=Textbox(
+                                    (50, 75, 50, 50), color=(255, 255, 255, 127)
+                                ),
                             ),
-                        ),
+                        ],
                     ),
                     Template(
                         path=self._build_path("templates/1-base.png"),
@@ -60,12 +62,16 @@ class TestProductRenderer:
                 ],
                 video_settings=VideoSettings(
                     movement="zoom_in",
-                    watermark=Watermark(
-                        text="PicGenius",
-                        font_path="./workdir/CS_Gordon/CS Gordon Vintage.otf",
-                        color=(0, 0, 0, 255),
-                        textbox=Textbox((50, 75, 50, 50), color=(255, 255, 255, 127)),
-                    ),
+                    watermarks=[
+                        Watermark(
+                            text="PicGenius",
+                            font_path="./workdir/CS_Gordon/CS Gordon Vintage.otf",
+                            color=(0, 0, 0, 255),
+                            textbox=Textbox(
+                                (50, 75, 50, 50), color=(255, 255, 255, 127)
+                            ),
+                        ),
+                    ],
                 ),
             ),
         )

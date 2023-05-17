@@ -80,7 +80,7 @@ class Template:
     background_color: tuple[int, int, int] = (0, 0, 0)
     path: Optional[str] = None
     filename: Optional[str] = None
-    watermark: Optional[Watermark] = None
+    watermarks: list[Watermark] = field(default_factory=list)
     images: list[TemplateImageElement] = field(default_factory=list)
     repeat: bool = False
 

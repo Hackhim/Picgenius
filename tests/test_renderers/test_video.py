@@ -18,11 +18,13 @@ class TestVideoRenderer:
 
         self.video_settings = VideoSettings(
             "random",
-            watermark=Watermark(
-                "./workdir/CS_Gordon/CS Gordon Vintage.otf",
-                "PicGenius",
-                color=(127, 127, 127, 127),
-            ),
+            watermarks=[
+                Watermark(
+                    "./workdir/CS_Gordon/CS Gordon Vintage.otf",
+                    "PicGenius",
+                    color=(127, 127, 127, 127),
+                ),
+            ],
         )
         self.output_dir = "./tests/workdir/output/"
 

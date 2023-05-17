@@ -1,7 +1,13 @@
 """Module for TestTemplateRenderer class declaration."""
 from pathlib import Path
 from PIL import Image
-from picgenius.models import Template, TemplateElement, TemplateImageElement, Design
+from picgenius.models import (
+    Template,
+    TemplateElement,
+    TemplateImageElement,
+    Design,
+    Watermark,
+)
 from picgenius.renderers import TemplateRenderer
 
 
@@ -43,7 +49,6 @@ class TestTemplateRenderer:
                 TemplateElement(position=(428, 186), size=(480, 685)),
                 TemplateElement(position=(998, 186), size=(480, 685)),
             ],
-            watermark=None,
         )
 
         self.template_2 = Template(
@@ -252,6 +257,20 @@ class TestTemplateRenderer:
                     position=("center", "bottom"),
                     margin=50,
                     transparency=0.8,
+                ),
+            ],
+            watermarks=[
+                Watermark(
+                    font_path="./tests/workdir/templates/fonts/CS Gordon Regular.otf",
+                    text="PICGENIUS",
+                ),
+                Watermark(
+                    font_path="./tests/workdir/templates/fonts/CS Gordon Regular.otf",
+                    text="PICGENIUS",
+                    position=("right", "top"),
+                    color=(0, 0, 0, 200),
+                    width=200,
+                    margin=50,
                 ),
             ],
         )
