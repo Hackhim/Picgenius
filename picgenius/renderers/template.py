@@ -4,7 +4,7 @@ from PIL import Image
 
 
 from picgenius import processing as im
-from picgenius.models import Template, TemplateElement, Design
+from picgenius.models import Template, TemplateElement, Design, TemplateImageElement
 from picgenius.renderers import WatermarkRenderer
 
 
@@ -80,6 +80,12 @@ class TemplateRenderer:
                 raise ValueError(
                     f'Template "{template.name}" has incorrect elements values.'
                 )
+
+        for image_element in template.images:
+            print(image_element)
+            TemplateRenderer.paste_image_on_template_image(
+                template_image, image_element
+            )
 
         if template.watermark is not None:
             template_image = WatermarkRenderer.apply_watermarking(
@@ -167,3 +173,95 @@ class TemplateRenderer:
 
         template.paste(transformed_design, (0, 0), transformed_design)
         return template
+
+    @staticmethod
+    def paste_image_on_template_image(
+        template_image: Image.Image, image_element: TemplateImageElement
+    ):
+        """Paste the image element on the specified template image."""
+        image = image_element.load_image()
+        image_size = TemplateRenderer._calculate_image_element_size(
+            image_element, image.size, template_image.size
+        )
+        image = image.resize(image_size, Image.ANTIALIAS)
+
+        if image_element.transparency < 1.0:
+            tmp_image = image.copy()
+            tmp_image.putalpha(int(image_element.transparency * 255))
+            image.paste(tmp_image, (0, 0), image)
+
+        image_position = TemplateRenderer._calculate_image_element_position(
+            image_element, image.size, template_image.size
+        )
+        return template_image.paste(image, image_position, image)
+
+    @staticmethod
+    def _calculate_image_element_size(
+        image_element: TemplateImageElement,
+        image_element_size: tuple[int, int],
+        template_image_size: tuple[int, int],
+    ) -> tuple[int, int]:
+        """Calculate the size of the image element."""
+        template_width, template_height = template_image_size
+        image_element_width, image_element_height = image_element_size
+        aspect_ratio = image_element_width / image_element_height
+
+        width = None
+        height = None
+
+        if isinstance(image_element.width, str) and image_element.width.endswith("%"):
+            percentage = int(image_element.width.strip("%")) / 100
+            width = int(template_width * percentage)
+        elif isinstance(image_element.width, (str, int, float)):
+            width = int(image_element.width)
+
+        if isinstance(image_element.height, str) and image_element.height.endswith("%"):
+            percentage = int(image_element.height.strip("%")) / 100
+            height = int(template_height * percentage)
+        elif isinstance(image_element.height, (str, int, float)):
+            height = int(image_element.height)
+
+        if width is None and height is not None:
+            width = int(height * aspect_ratio)
+        elif width is not None and height is None:
+            height = int(width / aspect_ratio)
+        else:
+            width, height = (image_element_width, image_element_height)
+
+        return (width, height)
+
+    @staticmethod
+    def _calculate_image_element_position(
+        image_element: TemplateImageElement,
+        image_element_size: tuple[int, int],
+        template_image_size: tuple[int, int],
+    ) -> tuple[int, int]:
+        """Calculate the position of the image element."""
+
+        image_element_width, image_element_height = image_element_size
+        template_width, template_height = template_image_size
+        x_pos = image_element.position[0]
+        y_pos = image_element.position[1]
+        margin = image_element.margin
+
+        if isinstance(x_pos, str):
+            if x_pos == "center":
+                x_pos = (template_width - image_element_width) // 2
+            elif x_pos == "right":
+                x_pos = template_width - image_element_width - margin
+            else:
+                x_pos = 0 + margin
+        else:
+            x_pos = int(x_pos)
+
+        if isinstance(y_pos, str):
+            if y_pos == "center":
+                y_pos = (template_height - image_element_height) // 2
+            elif y_pos == "bottom":
+                y_pos = template_height - image_element_height - margin
+            else:
+                y_pos = 0 + margin
+        else:
+            y_pos = int(y_pos)
+
+        return (x_pos, y_pos)

@@ -7,6 +7,7 @@ from picgenius.models import (
     Watermark,
     Template,
     TemplateElement,
+    TemplateImageElement,
     VideoSettings,
     ProductType,
     Textbox,
@@ -141,6 +142,10 @@ class ConfigLoader:
         elements_data = template_data.get("elements", [])
         elements = [TemplateElement(**element_data) for element_data in elements_data]
         kwargs["elements"] = elements
+
+        images_data = template_data.get("images", [])
+        images = [TemplateImageElement(**image_data) for image_data in images_data]
+        kwargs["images"] = images
 
         watermark_data = template_data.get("watermark")
         if watermark_data is not None:
