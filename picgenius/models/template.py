@@ -10,8 +10,10 @@
 # from . import utils
 
 
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, ClassVar
+
+from PIL import Image
 
 from picgenius import utils
 from .watermark import Watermark
@@ -38,6 +40,37 @@ class TemplateElement:
 
 
 @dataclass
+class TemplateImageElement:
+    """Template image element data."""
+
+    path: str
+    position: tuple[int | str, int | str] = ("center", "center")
+    width: Optional[str | int] = None
+    height: Optional[str | int] = None
+    margin: int = 0
+    transparency: float = 1.0
+
+    AVAILABLE_X_POS: ClassVar[list[str]] = ["left", "center", "right"]
+    AVAILABLE_Y_POS: ClassVar[list[str]] = ["top", "center", "bottom"]
+
+    def __post_init__(self):
+        self.position = tuple(self.position)
+
+        if isinstance(self.position[0], str):
+            assert (
+                self.position[0] in self.AVAILABLE_X_POS
+            ), f"Position {self.position[0]} is not available."
+        if isinstance(self.position[1], str):
+            assert (
+                self.position[1] in self.AVAILABLE_Y_POS
+            ), f"Position {self.position[1]} is not available."
+
+    def load_image(self):
+        """Return image as PIL.Image."""
+        return Image.open(self.path)
+
+
+@dataclass
 class Template:
     """Template data."""
 
@@ -48,6 +81,7 @@ class Template:
     path: Optional[str] = None
     filename: Optional[str] = None
     watermark: Optional[Watermark] = None
+    images: list[TemplateImageElement] = field(default_factory=list)
 
     def __post_init__(self):
         if self.filename is not None:

@@ -33,3 +33,13 @@ class Watermark:
 
     def __post_init__(self):
         self.color = tuple(self.color)
+        self.position = tuple(self.position)
+
+        if isinstance(self.position[0], str):
+            assert (
+                self.position[0] in self.AVAILABLE_X_POS
+            ), f"Position {self.position[0]} is not available."
+        if isinstance(self.position[1], str):
+            assert (
+                self.position[1] in self.AVAILABLE_Y_POS
+            ), f"Position {self.position[1]} is not available."
