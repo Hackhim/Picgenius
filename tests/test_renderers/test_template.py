@@ -113,6 +113,53 @@ class TestTemplateRenderer:
         self.output_path_2 = "./tests/workdir/output/test-template-render-2.png"
         self.output_path_3 = "./tests/workdir/output/test-template-render-3.png"
 
+    def test_generate_templates(self):
+        """Test generate_templates"""
+        designs = [
+            Design(path="./tests/workdir/designs/plants/plant-1.png"),
+            Design(path="./tests/workdir/designs/plants/plant-2.png"),
+            Design(path="./tests/workdir/designs/plants/plant-3.png"),
+        ]
+        templates = [
+            Template(
+                filename="templates_a.jpg",
+                elements=[
+                    TemplateElement(position=(100, 100), size=(500, 500)),
+                ],
+                background_color=(240, 240, 240),
+            ),
+            Template(
+                filename="templates_b.jpg",
+                elements=[
+                    TemplateElement(position=(100, 100), size=(500, 500)),
+                    TemplateElement(position=(700, 100), size=(500, 500)),
+                    TemplateElement(position=(1300, 100), size=(500, 500)),
+                    TemplateElement(position=(100, 600), size=(500, 500)),
+                    TemplateElement(position=(700, 600), size=(500, 500)),
+                    TemplateElement(position=(1300, 600), size=(500, 500)),
+                ],
+                background_color=(240, 240, 240),
+                repeat=True,
+            ),
+            Template(
+                filename="templates_c.jpg",
+                elements=[
+                    TemplateElement(position=(100, 100), size=(500, 500)),
+                    TemplateElement(position=(700, 100), size=(500, 500)),
+                    TemplateElement(position=(1300, 100), size=(500, 500)),
+                ],
+                background_color=(240, 240, 240),
+            ),
+        ]
+        results = TemplateRenderer.generate_templates(templates, designs)
+
+        for image, template in results:
+            output_path = f"tests/workdir/output/{template.filename}"
+            assert isinstance(image, Image.Image)
+            image = image.convert("RGB")
+            image.save(output_path)
+            assert Path(output_path).is_file()
+
     def test_generate_template(self):
         """Test generate_templates"""
         designs = [self.design1, self.design2]
@@ -150,10 +197,11 @@ class TestTemplateRenderer:
         not_path_template = Template(
             filename="no_path_template.jpg",
             elements=[
-                TemplateElement(position=(0, 0), size=(2000, 2000), zoom=3),
-                TemplateElement(position=(998, 186), size=(480, 685)),
+                TemplateElement(position=(100, 100), size=(500, 500)),
+                TemplateElement(position=(700, 100), size=(500, 500)),
             ],
             background_color=(240, 240, 240),
+            repeat=True,
         )
         output_path = f"tests/workdir/output/{not_path_template.filename}"
 

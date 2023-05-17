@@ -22,25 +22,27 @@ class TemplateRenderer:
         design_index = 0
         for template in templates:
             design_index, next_designs = TemplateRenderer._get_next_designs(
-                designs,
-                design_index,
-                len(template.elements),
+                template, designs, design_index
             )
             yield (TemplateRenderer.generate_template(template, next_designs), template)
 
     @staticmethod
     def _get_next_designs(
-        designs: list[Design], start_index: int, n_designs: int
+        template: Template, designs: list[Design], start_index: int
     ) -> tuple[int, list[Design]]:
         """Returns the next n designs starting from self.design_index."""
-        assert n_designs > 0
         designs_count = len(designs)
         design_index = start_index
         next_designs = []
+        n_elements = len(template.elements)
 
-        for _ in range(n_designs):
-            next_designs.append(designs[design_index])
+        if template.repeat:
+            next_designs.extend(designs[design_index] for _ in range(n_elements))
             design_index = (design_index + 1) % designs_count
+        else:
+            for _ in range(n_elements):
+                next_designs.append(designs[design_index])
+                design_index = (design_index + 1) % designs_count
         return (design_index, next_designs)
 
     @staticmethod

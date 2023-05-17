@@ -75,13 +75,14 @@ class Template:
     """Template data."""
 
     elements: list[TemplateElement]
-    name: str = ""
+    name: str = field(init=False)
     size: tuple[int, int] = (2000, 2000)
     background_color: tuple[int, int, int] = (0, 0, 0)
     path: Optional[str] = None
     filename: Optional[str] = None
     watermark: Optional[Watermark] = None
     images: list[TemplateImageElement] = field(default_factory=list)
+    repeat: bool = False
 
     def __post_init__(self):
         if self.filename is not None:
