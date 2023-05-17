@@ -27,6 +27,7 @@ class Product:
     designs: list[Design] = field(init=False)
 
     def __post_init__(self):
+        self.design_path = self.design_path.strip("/")
         _, name = utils.extract_filename(self.design_path)
         self.name = name
         self.designs = []
