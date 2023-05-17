@@ -160,7 +160,4 @@ cython_debug/
 #.idea/
 
 workdir/
-models/
-upscaled/
-products/
 .benchmarks
