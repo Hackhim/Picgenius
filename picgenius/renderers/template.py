@@ -82,7 +82,6 @@ class TemplateRenderer:
                 )
 
         for image_element in template.images:
-            print(image_element)
             TemplateRenderer.paste_image_on_template_image(
                 template_image, image_element
             )
