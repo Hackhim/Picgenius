@@ -4,10 +4,10 @@ from typing import Optional
 
 import click
 
-from picgenius.config import ConfigLoader
-from picgenius.models import ProductType
-from picgenius.controller import Controller
-from picgenius.logger import PicGeniusLogger
+from .config import ConfigLoader
+from .models import ProductType
+from .controller import Controller
+from .logger import PicGeniusLogger
 
 
 @dataclass
