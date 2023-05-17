@@ -1,7 +1,7 @@
 """Module for TestTemplateRenderer class declaration."""
 from pathlib import Path
 from PIL import Image
-from picgenius.models import Template, TemplateElement, Design
+from picgenius.models import Template, TemplateElement, TemplateImageElement, Design
 from picgenius.renderers import TemplateRenderer
 
 
@@ -158,6 +158,59 @@ class TestTemplateRenderer:
         output_path = f"tests/workdir/output/{not_path_template.filename}"
 
         result = TemplateRenderer.generate_template(not_path_template, designs)
+        result = result.convert("RGB")
+
+        assert isinstance(result, Image.Image)
+        result.save(output_path)
+        assert Path(output_path).is_file()
+
+    def test_generate_template_with_images(self):
+        """Test template generation with images elements."""
+
+        designs = [
+            Design(path="./tests/workdir/designs/flowers-1.png"),
+            Design(path="./tests/workdir/designs/flowers-2.png"),
+        ]
+        template = Template(
+            filename="template_with_images.jpg",
+            path="./tests/workdir/templates/template-biais-1.png",
+            elements=[
+                TemplateElement(
+                    position=(
+                        (110, 172),
+                        (286, 198),
+                        (110, 533),
+                        (286, 530),
+                    ),
+                ),
+                TemplateElement(
+                    position=(
+                        (340, 207),
+                        (469, 226),
+                        (340, 528),
+                        (469, 528),
+                    ),
+                ),
+            ],
+            images=[
+                TemplateImageElement(
+                    path="./tests/workdir/templates/images/new_tag.png",
+                    position=(0, 0),
+                    width="20%",
+                ),
+                TemplateImageElement(
+                    path="./tests/workdir/templates/images/pepe.png",
+                    height="30%",
+                    position=("center", "bottom"),
+                    margin=50,
+                    transparency=0.8,
+                ),
+            ],
+        )
+
+        output_path = f"tests/workdir/output/{template.filename}"
+
+        result = TemplateRenderer.generate_template(template, designs)
         result = result.convert("RGB")
 
         assert isinstance(result, Image.Image)
