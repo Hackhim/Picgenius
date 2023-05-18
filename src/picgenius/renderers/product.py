@@ -102,6 +102,8 @@ class ProductRenderer:
     def save_image(image: Image.Image, output_dir: str, filename: str):
         """Save image to output_dir."""
         output_path = os.path.join(output_dir, filename)
+        if filename.endswith(".jpg"):
+            image = image.convert("RGB")
         image.save(output_path)
         image.close()
 
