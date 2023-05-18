@@ -139,7 +139,7 @@ class ConfigLoader:
         self, template_data: dict, watermarks: dict[str, Watermark]
     ) -> Template:
         kwargs = {**template_data}
-        kwargs["path"] = kwargs.pop("template_path")
+        kwargs["path"] = kwargs.pop("template_path", None)
 
         elements_data = template_data.get("elements", [])
         elements = [TemplateElement(**element_data) for element_data in elements_data]
