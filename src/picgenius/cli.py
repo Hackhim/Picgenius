@@ -4,6 +4,7 @@ from typing import Optional
 
 import click
 
+from picgenius import __version__
 from picgenius.config import ConfigLoader
 from picgenius.models import ProductType
 from picgenius.controller import Controller
@@ -38,6 +39,62 @@ def picgenius(ctx, config_path: str, debug: bool):
     config_loader = ConfigLoader(config_path)
     context_object = ContextObject(config_loader)
     ctx.obj = context_object
+
+
+@picgenius.command()
+def version():
+    """Print the version of picgenius."""
+    print(f"Picgenius version: {__version__}")
+
+
+@picgenius.command
+@click.argument("design_path", type=str)
+@click.option(
+    "--output",
+    "-o",
+    "output_dir",
+    default="./upscaled",
+    help="Output directory. Default: ./upscaled",
+)
+@click.option(
+    "--scale",
+    "-s",
+    "scale",
+    type=int,
+    default=2,
+    help="Available scale multiplicators: 2, 4, 8, 10, 12 and 16. Default: 2",
+)
+@click.option(
+    "--cpu",
+    is_flag=True,
+    type=bool,
+    default=False,
+    help="Force usage of CPU.",
+)
+@click.option(
+    "--suffix",
+    type=str,
+    help="Suffix to be added to output file names. Default: -x{scale}-upscaled",
+)
+@click.option(
+    "--extension",
+    type=str,
+    default="jpg",
+    help="Extension to be set to output file names. Default: jpg",
+)
+def upscale(
+    design_path: str,
+    output_dir: str,
+    scale: int,
+    cpu: bool,
+    suffix: str,
+    extension: str,
+):
+    """Upscale given design."""
+    controller = Controller(design_path)
+    controller.upscale_designs(
+        output_dir, scale, cpu=cpu, suffix=suffix, file_extension=extension
+    )
 
 
 @picgenius.group
@@ -125,53 +182,3 @@ def format_designs(context_object: ContextObject):
 
     controller = Controller(design_path, product_type=product_type)
     controller.generate_products_formatted_designs(output_dir)
-
-
-@picgenius.command
-@click.argument("design_path", type=str)
-@click.option(
-    "--output",
-    "-o",
-    "output_dir",
-    default="./upscaled",
-    help="Output directory. Default: ./upscaled",
-)
-@click.option(
-    "--scale",
-    "-s",
-    "scale",
-    type=int,
-    default=2,
-    help="Available scale multiplicators: 2, 4, 8, 10, 12 and 16. Default: 2",
-)
-@click.option(
-    "--cpu",
-    is_flag=True,
-    type=bool,
-    default=False,
-    help="Force usage of CPU.",
-)
-@click.option(
-    "--suffix",
-    type=str,
-    help="Suffix to be added to output file names. Default: -x{scale}-upscaled",
-)
-@click.option(
-    "--extension",
-    type=str,
-    default="jpg",
-    help="Extension to be set to output file names. Default: jpg",
-)
-def upscale(
-    design_path: str,
-    output_dir: str,
-    scale: int,
-    cpu: bool,
-    suffix: str,
-    extension: str,
-):
-    """Upscale given design."""
-    controller = Controller(design_path)
-    controller.upscale_designs(
-        output_dir, scale, cpu=cpu, suffix=suffix, file_extension=extension
-    )
