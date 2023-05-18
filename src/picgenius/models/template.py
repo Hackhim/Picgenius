@@ -94,3 +94,5 @@ class Template:
             self.filename = filename
         else:
             raise ValueError("Either filename or path must be defined.")
+
+        self.background_color = tuple(self.background_color)

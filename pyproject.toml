@@ -6,7 +6,7 @@ dev = [
 
 [project]
 name = "Picgenius"
-version = "0.1.4"
+version = "0.1.5"
 description = "Command line tool to generate product visuals"
 authors = [
     {name = "JeremyLP", email = "jeremyleprunenec.pro@gmail.com"},
