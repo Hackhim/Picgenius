@@ -22,7 +22,7 @@ class DesignRenderer:
             size_in_pixels = (inches_x * ppi, inches_y * ppi)
 
             formatted_image = im.resize_and_crop(image, *size_in_pixels)
-            filename = f"{design.name}-{inches_x}-{inches_y}"
+            filename = f"{design.name}-{inches_x}-{inches_y}.{design_format.extension}"
             yield (formatted_image, filename)
 
     @staticmethod

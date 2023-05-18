@@ -14,6 +14,7 @@ class Format:
 
     ppi: int
     inches: tuple[int, int]
+    extension: str = "jpg"
 
 
 @dataclass

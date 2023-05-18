@@ -16,7 +16,6 @@ class ProductRenderer:
 
     FORMATTED_DESIGNS_FOLDER = "formatted"
     VISUALS_FOLDER = "visuals"
-    VIDEO_FILENAME = "video.mp4"
 
     @staticmethod
     def generate_templates(product: Product, output_dir: str, max_threads: int = 10):
@@ -57,11 +56,12 @@ class ProductRenderer:
         else:
             design = product.designs[design_index]
 
+        video_settings = product.type.video_settings
         output_dir = ProductRenderer.prepare_visuals_output_dir(output_dir, product)
-        output_path = os.path.join(output_dir, ProductRenderer.VIDEO_FILENAME)
+        output_path = os.path.join(output_dir, video_settings.filename)
 
         image = Image.open(design.path)
-        video = VideoRenderer.generate_video(image, product.type.video_settings)
+        video = VideoRenderer.generate_video(image, video_settings)
         video.write_videofile(output_path, verbose=False, logger=None)
 
     @staticmethod
@@ -90,7 +90,7 @@ class ProductRenderer:
                         ProductRenderer.save_image,
                         formatted_image,
                         formatted_dir,
-                        f"{filename}.jpg",
+                        filename,
                     )
                     futures.append(future)
 

@@ -14,6 +14,7 @@ class VideoSettings:
     fps: int = 24
     format: tuple[int, int] = (2000, 2000)
     start_zoom: int = 100
+    filename: str = "video.mp4"
     watermarks: list[Watermark] = field(default_factory=list)
 
     _AVAILABLE_MOVEMENTS: ClassVar[list[str]] = [
