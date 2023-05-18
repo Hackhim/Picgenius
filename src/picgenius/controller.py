@@ -128,8 +128,18 @@ class Controller:
     #            "(%s) x%s upscaled designs generation done", product.name, scale
     #        )
 
-    def upscale_designs(self, output_dir: str, scale: int, cpu: bool = False):
+    def upscale_designs(
+        self,
+        output_dir: str,
+        scale: int,
+        cpu: bool = False,
+        suffix: Optional[str] = None,
+        file_extension: str = "jpg",
+    ):
         """Upscale designs found in design_path."""
+        if suffix is None:
+            suffix = f"-x{scale}-upscaled"
+
         designs = [
             Design(design_path)
             for design_path in utils.find_image_file_paths(self.design_path)
@@ -139,7 +149,7 @@ class Controller:
         self.log_found_designs(designs)
         for design in designs:
             upscaled_path = os.path.join(
-                output_dir, f"{design.name}-x{scale}-upscaled.jpg"
+                output_dir, f"{design.name}{suffix}.{file_extension}"
             )
             self.logger.info("(%s) Start x%d upscale", design.name, scale)
             self.logger.info("(%s) output: %s", design.name, upscaled_path)
@@ -153,6 +163,7 @@ class Controller:
         self.logger.info("Found %d designs in %s", len(designs), self.design_path)
         for design in designs:
             self.logger.info("\t%s (%s)", design.path, design.name)
+        self.logger.info("")
 
     def log_found_products(self, products: list[Product]):
         """Log found products."""

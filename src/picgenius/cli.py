@@ -151,7 +151,27 @@ def format_designs(context_object: ContextObject):
     default=False,
     help="Force usage of CPU.",
 )
-def upscale(design_path: str, output_dir: str, scale: int, cpu: bool):
+@click.option(
+    "--suffix",
+    type=str,
+    help="Suffix to be added to output file names. Default: -x{scale}-upscaled",
+)
+@click.option(
+    "--extension",
+    type=str,
+    default="jpg",
+    help="Extension to be set to output file names. Default: jpg",
+)
+def upscale(
+    design_path: str,
+    output_dir: str,
+    scale: int,
+    cpu: bool,
+    suffix: str,
+    extension: str,
+):
     """Upscale given design."""
     controller = Controller(design_path)
-    controller.upscale_designs(output_dir, scale, cpu=cpu)
+    controller.upscale_designs(
+        output_dir, scale, cpu=cpu, suffix=suffix, file_extension=extension
+    )
