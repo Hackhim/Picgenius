@@ -55,7 +55,11 @@ class Controller:
         """Process the generation of all assets for the given product."""
 
         self.logger.info("(%s) Start product all assets generation", product.name)
-        self.logger.info("(%s) output directory: %s", product.name, output_dir)
+        self.logger.info(
+            "(%s) output directory: %s",
+            product.name,
+            os.path.join(output_dir, product.name),
+        )
         count_formats = len(product.type.formats)
         count_templates = len(product.type.templates)
         ProductRenderer.generate_formatted_designs(
@@ -66,6 +70,7 @@ class Controller:
         )
         ProductRenderer.generate_video(product, output_dir)
         self.logger.info("(%s) All assets generation done", product.name)
+        self.logger.info("")
 
     def generate_products_templates(
         self, output_dir: str, template_name: Optional[str] = None
@@ -82,6 +87,7 @@ class Controller:
             )
             ProductRenderer.generate_templates(product, output_dir)
             self.logger.info("(%s) Templates generation done", product.name)
+            self.logger.info("")
 
     def generate_products_video(self, output_dir: str):
         """Generate products video."""
@@ -94,6 +100,7 @@ class Controller:
             )
             ProductRenderer.generate_video(product, output_dir)
             self.logger.info("(%s) Video generation done", product.name)
+            self.logger.info("")
 
     def generate_products_formatted_designs(self, output_dir: str):
         """Generate products formatted designs."""
@@ -106,6 +113,7 @@ class Controller:
             )
             ProductRenderer.generate_formatted_designs(product, output_dir)
             self.logger.info("(%s) Formatted designs generation done", product.name)
+            self.logger.info("")
 
     # TODO: add design upscaling for given product
     # def generate_product_upscaled_designs(self, output_dir: str, scale: int):
@@ -138,6 +146,7 @@ class Controller:
             upscaled_design = DesignRenderer.upscale_design(design, scale, cpu=cpu)
             upscaled_design.save(upscaled_path)
             self.logger.info("(%s) x%s upscale done", design.name, scale)
+            self.logger.info("")
 
     def log_found_designs(self, designs: list[Design]):
         """Log found designs."""
@@ -152,4 +161,4 @@ class Controller:
             self.logger.info("(%s)", product.name)
             for design in product.designs:
                 self.logger.info("\t%s", design.path)
-            self.logger.info("\n")
+            self.logger.info("")
