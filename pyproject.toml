@@ -27,7 +27,8 @@ pythonpath = "src"
 
 
 [tool.pdm.scripts]
-picgenius = "python picgenius"
+picgenius.cmd = "python -m picgenius"
+picgenius.env = {PYTHONPATH = "src"}
 test = "pytest -s"
 
 [build-system]
