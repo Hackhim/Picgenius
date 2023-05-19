@@ -283,3 +283,26 @@ class TestTemplateRenderer:
         assert isinstance(result, Image.Image)
         result.save(output_path)
         assert Path(output_path).is_file()
+
+    def test_generate_template_width(self):
+        """Test template generation with undefined height."""
+
+        design = Design(path="./tests/workdir/designs/flowers-1.png")
+        designs = [design, design]
+        template = Template(
+            filename="template_no_height.jpg",
+            elements=[
+                TemplateElement(position=(100, 100), width=500),
+                TemplateElement(position=(700, 100), width=500, ratio=(3, 4)),
+            ],
+            background_color=(240, 240, 240),
+            repeat=True,
+        )
+        output_path = f"tests/workdir/output/{template.filename}"
+
+        result = TemplateRenderer.generate_template(template, designs)
+        result = result.convert("RGB")
+
+        assert isinstance(result, Image.Image)
+        result.save(output_path)
+        assert Path(output_path).is_file()

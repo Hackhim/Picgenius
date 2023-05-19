@@ -27,6 +27,8 @@ class TemplateElement:
         tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
     ]
     size: Optional[tuple[int, int]] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
     ratio: Optional[tuple[int, int]] = None
     zoom: Optional[float] = None
     zoom_position: Optional[tuple[int, int]] = None

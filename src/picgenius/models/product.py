@@ -1,6 +1,8 @@
 """Module for Product class declaration."""
 from dataclasses import dataclass, field
 
+from PIL import Image
+
 from picgenius import utils
 from .product_type import ProductType
 
@@ -15,6 +17,10 @@ class Design:
     def __post_init__(self):
         _, name = utils.extract_filename(self.path)
         self.name = name
+
+    def load_image(self) -> Image.Image:
+        """Loads the image."""
+        return Image.open(self.path)
 
 
 @dataclass

@@ -112,7 +112,9 @@ class TestProductRenderer:
                 self.OUTPUT_DIR,
                 product.name,
                 ProductRenderer.VISUALS_FOLDER,
-                ProductRenderer.VIDEO_FILENAME,
+                self.product.type.video_settings.filename
+                if self.product.type.video_settings is not None
+                else "default.mp4",
             )
         )
 

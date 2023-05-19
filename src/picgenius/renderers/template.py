@@ -58,30 +58,17 @@ class TemplateRenderer:
             Image.Image: The generated image with designs fitted into the template.
         """
 
-        if template.path is not None:
-            template_image = Image.open(template.path)
-        else:
-            template_image = Image.new("RGBA", template.size, template.background_color)
+        template_image = TemplateRenderer._create_template_image(template)
 
         for design, element in zip(designs, template.elements):
-            position = element.position
-            size = element.size
+            design_image = design.load_image()
+            design_image = TemplateRenderer._design_pre_treatment(design_image, element)
 
-            design_image = Image.open(design.path)
-            design_image = TemplateRenderer._apply_zoom(design_image, element)
-            design_image = TemplateRenderer._apply_overlay(design_image, element)
-            if len(position) == 2 and size is not None:
-                TemplateRenderer._fit_design_in_template(
-                    template_image, design_image, position, size
-                )
-            elif len(position) == 4:
-                TemplateRenderer._fit_design_in_transformed_template(
-                    template_image, design_image, position, element.ratio
-                )
-            else:
-                raise ValueError(
-                    f'Template "{template.name}" has incorrect elements values.'
-                )
+            template_image = TemplateRenderer._template_element_integration(
+                template_image,
+                design_image,
+                element,
+            )
 
         for image_element in template.images:
             TemplateRenderer.paste_image_on_template_image(
@@ -96,6 +83,28 @@ class TemplateRenderer:
         return template_image
 
     @staticmethod
+    def _create_template_image(template: Template) -> Image.Image:
+        if template.path is not None:
+            return Image.open(template.path)
+        else:
+            return Image.new("RGBA", template.size, template.background_color)
+
+    @staticmethod
+    def _design_pre_treatment(
+        image: Image.Image, element: TemplateElement
+    ) -> Image.Image:
+        image = TemplateRenderer._apply_ratio(image, element)
+        image = TemplateRenderer._apply_zoom(image, element)
+        image = TemplateRenderer._apply_overlay(image, element)
+        return image
+
+    @staticmethod
+    def _apply_ratio(image: Image.Image, element: TemplateElement) -> Image.Image:
+        if element.ratio is not None:
+            return im.crop_to_ratio(image, element.ratio)
+        return image
+
+    @staticmethod
     def _apply_zoom(image: Image.Image, element: TemplateElement) -> Image.Image:
         if element.zoom is not None:
             return im.zoom(image, element.zoom, zoom_center=element.zoom_position)
@@ -106,6 +115,40 @@ class TemplateRenderer:
         if element.overlay is not None:
             return im.apply_transparent_overlay(image, element.overlay)
         return image
+
+    @staticmethod
+    def _template_element_integration(
+        template_image: Image.Image, design_image: Image.Image, element: TemplateElement
+    ) -> Image.Image:
+        position = element.position
+        size = element.size
+        width = element.width
+        height = element.height
+
+        design_width, design_height = design_image.size
+        aspect_ratio = design_width / design_height
+
+        if size is not None:
+            width, height = size
+        elif width is None and height is not None:
+            width = int(height * aspect_ratio)
+        elif width is not None and height is None:
+            height = int(width / aspect_ratio)
+        else:
+            width, height = (design_width, design_height)
+
+        if len(position) == 2:
+            return TemplateRenderer._fit_design_in_template(
+                template_image, design_image, position, (width, height)
+            )
+        elif len(position) == 4:
+            return TemplateRenderer._fit_design_in_transformed_template(
+                template_image, design_image, position
+            )
+        else:
+            raise ValueError(
+                f"Invalid position value ({position}) for element: {element}."
+            )
 
     @staticmethod
     def _fit_design_in_template(
@@ -138,7 +181,6 @@ class TemplateRenderer:
         position: tuple[
             tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]
         ],
-        ratio: Optional[tuple[int, int]] = None,
     ) -> Image.Image:
         """
         Paste the specified design on the specified transformed template.
@@ -154,8 +196,6 @@ class TemplateRenderer:
             Image.Image: The template image with the design pasted.
         """
         working_design = design.copy()
-        if ratio is not None:
-            working_design = im.crop_to_ratio(working_design, ratio)
         working_design = im.proportional_overlap_resize(working_design, template)
 
         tl, tr, bl, br = position
