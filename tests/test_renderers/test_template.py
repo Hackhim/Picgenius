@@ -306,3 +306,76 @@ class TestTemplateRenderer:
         assert isinstance(result, Image.Image)
         result.save(output_path)
         assert Path(output_path).is_file()
+
+    def test_generate_template_with_transparency(self):
+        """Test template generation with transparency."""
+
+        designs = [
+            Design(path="./tests/workdir/designs/flowers-1.png"),
+            Design(path="./tests/workdir/designs/flowers-2.png"),
+            Design(path="./tests/workdir/designs/flowers-3.png"),
+        ]
+        template = Template(
+            filename="template_with_transparency.jpg",
+            path="./tests/workdir/templates/template-biais-3.png",
+            elements=[
+                TemplateElement(
+                    position=(
+                        (502, 358),
+                        (1158, 416),
+                        (502, 1455),
+                        (1158, 1457),
+                    ),
+                    transparency=0.1,
+                ),
+                TemplateElement(
+                    position=(
+                        (1259, 426),
+                        (1840, 480),
+                        (1259, 1459),
+                        (1840, 1461),
+                    ),
+                    transparency=0.5,
+                ),
+                TemplateElement(
+                    position=(
+                        (1931, 489),
+                        (2449, 536),
+                        (1931, 1463),
+                        (2449, 1465),
+                    ),
+                    transparency=1,
+                ),
+            ],
+        )
+        template2 = Template(
+            filename="template_with_transparency_2.jpg",
+            path="./tests/workdir/templates/3-table.png",
+            elements=[
+                TemplateElement(
+                    position=(428, 186),
+                    size=(480, 685),
+                    transparency=0.1,
+                ),
+                TemplateElement(
+                    position=(998, 186),
+                    size=(480, 685),
+                ),
+            ],
+        )
+
+        output_path = f"tests/workdir/output/{template.filename}"
+        result = TemplateRenderer.generate_template(template, designs)
+        result = result.convert("RGB")
+
+        assert isinstance(result, Image.Image)
+        result.save(output_path)
+        assert Path(output_path).is_file()
+
+        output_path = f"tests/workdir/output/{template2.filename}"
+        result = TemplateRenderer.generate_template(template2, designs)
+        result = result.convert("RGB")
+
+        assert isinstance(result, Image.Image)
+        result.save(output_path)
+        assert Path(output_path).is_file()

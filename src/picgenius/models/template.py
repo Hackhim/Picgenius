@@ -33,12 +33,16 @@ class TemplateElement:
     zoom: Optional[float] = None
     zoom_position: Optional[tuple[int, int]] = None
     overlay: Optional[tuple[int, int, int, int]] = None
+    transparency: Optional[float] = None
 
     def __post_init__(self):
         if self.overlay is not None:
             self.overlay = tuple(self.overlay)
         if self.ratio is not None:
             self.ratio = tuple(self.ratio)
+
+        if self.transparency is not None:
+            assert 0 <= self.transparency <= 1, "transparency must be between 0 and 1"
 
 
 @dataclass

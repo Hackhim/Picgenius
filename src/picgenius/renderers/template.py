@@ -96,6 +96,7 @@ class TemplateRenderer:
         image = TemplateRenderer._apply_ratio(image, element)
         image = TemplateRenderer._apply_zoom(image, element)
         image = TemplateRenderer._apply_overlay(image, element)
+        image = TemplateRenderer._apply_transparency(image, element)
         return image
 
     @staticmethod
@@ -114,6 +115,14 @@ class TemplateRenderer:
     def _apply_overlay(image: Image.Image, element: TemplateElement) -> Image.Image:
         if element.overlay is not None:
             return im.apply_transparent_overlay(image, element.overlay)
+        return image
+
+    @staticmethod
+    def _apply_transparency(image: Image.Image, element: TemplateElement):
+        if element.transparency is not None and element.transparency < 1.0:
+            image = image.convert("RGBA")
+            image.putalpha(int(element.transparency * 255))
+            image.paste(image, (0, 0), image)
         return image
 
     @staticmethod
@@ -171,7 +180,10 @@ class TemplateRenderer:
             Image.Image: The template image with the design pasted.
         """
         resized_design = im.resize_and_crop(design, *size)
-        template.paste(resized_design, position[:])
+        if resized_design.mode == "RGBA":
+            template.paste(resized_design, position[:], resized_design)
+        else:
+            template.paste(resized_design, position[:])
         return template
 
     @staticmethod
