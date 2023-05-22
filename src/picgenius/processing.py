@@ -245,7 +245,7 @@ def proportional_overlap_resize(
     new_height = int(ref_width / aspect_ratio)
 
     # Resize the image
-    resized_image = image_to_resize.resize((new_width, new_height), Image.ANTIALIAS)
+    resized_image = image_to_resize.resize((new_width, new_height), Image.LANCZOS)
 
     return resized_image
 

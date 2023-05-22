@@ -38,14 +38,14 @@ class DesignRenderer:
             upscaled_image = im.upscale_image(image, 4, cpu=cpu)
             width, height = upscaled_image.size
             upscaled_image = upscaled_image.resize(
-                (width * 3 // 4, height * 3 // 4), Image.ANTIALIAS
+                (width * 3 // 4, height * 3 // 4), Image.LANCZOS
             )
             upscaled_image = im.upscale_image(upscaled_image, 4, cpu=cpu)
         elif scale == 10:
             upscaled_image = im.upscale_image(image, 4, cpu=cpu)
             width, height = upscaled_image.size
             upscaled_image = upscaled_image.resize(
-                (width * 5 // 8, height * 5 // 8), Image.ANTIALIAS
+                (width * 5 // 8, height * 5 // 8), Image.LANCZOS
             )
             upscaled_image = im.upscale_image(upscaled_image, 4, cpu=cpu)
         else:

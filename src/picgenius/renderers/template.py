@@ -236,7 +236,7 @@ class TemplateRenderer:
         image_size = TemplateRenderer._calculate_image_element_size(
             image_element, image.size, template_image.size
         )
-        image = image.resize(image_size, Image.ANTIALIAS)
+        image = image.resize(image_size, Image.LANCZOS)
 
         if image_element.transparency < 1.0:
             tmp_image = image.copy()
