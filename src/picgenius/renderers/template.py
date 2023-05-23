@@ -246,6 +246,9 @@ class TemplateRenderer:
         image_position = TemplateRenderer._calculate_image_element_position(
             image_element, image.size, template_image.size
         )
+
+        if image.mode != "RGBA":
+            image = image.convert("RGBA")
         return template_image.paste(image, image_position[:], image)
 
     @staticmethod

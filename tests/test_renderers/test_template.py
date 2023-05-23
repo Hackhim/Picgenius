@@ -252,6 +252,11 @@ class TestTemplateRenderer:
                     width="20%",
                 ),
                 TemplateImageElement(
+                    path="./tests/workdir/templates/images/NEW.png",
+                    position=(300, 100),
+                    width=100,
+                ),
+                TemplateImageElement(
                     path="./tests/workdir/templates/images/pepe.png",
                     height="30%",
                     position=("center", "bottom"),
